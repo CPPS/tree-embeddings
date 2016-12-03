@@ -1,20 +1,25 @@
+package generators;
+
+import geometry.Point;
+import math.Interval;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-public class RandomPointGenerator implements PointGenerator {
+public class RandomPointSet implements PointSet {
 
     protected int n;
     protected Interval x_range;
     protected Interval y_range;
     protected Random random;
 
-    public RandomPointGenerator(int n, int min_x, int max_x, int min_y, int max_y) {
+    public RandomPointSet(int n, int min_x, int max_x, int min_y, int max_y) {
         this(n, new Interval(min_x, max_x), new Interval(min_y, max_y));
     }
 
-    public RandomPointGenerator(int n, Interval x_range, Interval y_range) {
+    public RandomPointSet(int n, Interval x_range, Interval y_range) {
 
         if (x_range.getLength() < n) {
             throw new IllegalArgumentException();

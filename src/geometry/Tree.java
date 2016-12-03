@@ -1,3 +1,5 @@
+package geometry;
+
 import java.util.*;
 
 public class Tree implements Iterable<Node> {

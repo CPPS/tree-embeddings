@@ -1,12 +1,14 @@
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import generators.*;
+import geometry.Point;
+import geometry.Tree;
+import math.Interval;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main {
 
     static Set<Point> generatePoints() {
-        PointGenerator generator = new RandomPointGenerator(10, new Interval(0, 100), new Interval(0, 100));
+        PointSet generator = new RandomPointSet(10, new Interval(0, 100), new Interval(0, 100));
         return generator.generate();
     }
 
@@ -20,12 +22,19 @@ public class Main {
         int min_y = 0;
         int max_y = 100;
 
-        PointGenerator points = new RandomPointGenerator(n, new Interval(min_x, max_x), new Interval(min_y, max_y));
-        Set<Point> P = points.generate();
+        PointSet pointset = new RandomPointSet(n, new Interval(min_x, max_x), new Interval(min_y, max_y));
+        Set<Point> P = pointset.generate();
 
-        TreeGenerator generator = new NaiveTreeGenerator(n, k);
-        for (Tree T : generator) {
-            // ...
+        TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
+        for (int[] code : generator) {
+            Iterable<int[]> sequences = new SequenceGenerator(code);
+            for (int[] sequence : sequences) {
+                Tree T = TreeBuilder.fromSequence(sequence);
+
+                // generate embeddings of T onto P
+
+                // validate embedding
+            }
         }
     }
 }
