@@ -38,17 +38,14 @@ public class Main {
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
-            System.out.println("(" + Arrays.toString(code) + ")");
             Iterable<int[]> sequences = new SequenceGenerator(code);
             for (int[] sequence : sequences) {
-                System.out.println(Arrays.toString(sequence));
-                //Tree T = TreeBuilder.fromSequence(sequence);
+                Tree T = TreeBuilder.fromSequence(sequence);
 
                 // generate embeddings of T onto P
 
                 // validate embedding
             }
-            break;
         }
     }
 }
