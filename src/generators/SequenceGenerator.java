@@ -39,7 +39,7 @@ public class SequenceGenerator implements Iterable<int[]> {
             {
                 this.source = new int[code.length];
                 for (int i = 0; i < source.length; i++) {
-                    source[i] = n - source.length - i - 1;
+                    source[i] = source.length - i - 1;
                 }
             }
 
@@ -62,7 +62,7 @@ public class SequenceGenerator implements Iterable<int[]> {
                     while(source[idx] < n && ((idx > 0) && source[idx] >= source[idx - 1])) {
                         idx--;
                         source[idx]++;
-                        source[idx + 1] = n - 2 - source.length - idx;
+                        source[idx + 1] = source.length - idx - 2;
                     }
 
                     if (source[0] == n) {
