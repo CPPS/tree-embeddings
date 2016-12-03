@@ -8,12 +8,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Main {
-
-    static Set<Point> generatePoints() {
-        PointSet generator = new RandomPointSet(10, new Interval(0, 100), new Interval(0, 100));
-        return generator.generate();
-    }
-
     public static void main(String[] args) {
 
         // read from file or System.in
