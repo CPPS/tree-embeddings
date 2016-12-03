@@ -1,22 +1,27 @@
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Node {
-    protected List<Integer> children = new LinkedList<>();
+    protected Set<Integer> neighbours = new HashSet<>();
 
     public void add(int node) {
-        children.add(node);
+        neighbours.add(node);
+    }
+    public void remove(int node) {
+        neighbours.remove(node);
+    }
+    public boolean isNeighbour(int node) {
+        return neighbours.contains(node);
     }
 
-    public List<Integer> getChildren() {
-        return children;
+    public Collection<Integer> getNeighbours() {
+        return neighbours;
     }
 
     public boolean isLeaf() {
-        return children.isEmpty();
+        return neighbours.isEmpty();
     }
 
     public int getDegree() {
-        return children.size() + 1;
+        return neighbours.size() + 1;
     }
 }

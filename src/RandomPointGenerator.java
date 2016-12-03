@@ -51,12 +51,12 @@ public class RandomPointGenerator implements PointGenerator {
         Set<Integer> x_coordinates = generateCoordinates(x_range);
         Set<Integer> y_coordinates = generateCoordinates(y_range);
 
-        Iterator<Integer> x_iterator = x_coordinates.iterator();
-        Iterator<Integer> y_iterator = y_coordinates.iterator();
+        Iterator<Integer> x_generator = x_coordinates.iterator();
+        Iterator<Integer> y_generator = y_coordinates.iterator();
 
         for (int i = 0; i < n; i++) {
-            int x = x_iterator.next();
-            int y = y_iterator.next();
+            int x = x_generator.next();
+            int y = y_generator.next();
 
             Point point = new Point(x,y);
             points.add(point);
