@@ -11,27 +11,27 @@ import java.util.Set;
 public class RandomPointSet implements PointSet {
 
     protected int n;
-    protected Interval x_range;
-    protected Interval y_range;
+    protected Interval xRange;
+    protected Interval yRange;
     protected Random random;
 
-    public RandomPointSet(int n, int min_x, int max_x, int min_y, int max_y) {
-        this(n, new Interval(min_x, max_x), new Interval(min_y, max_y));
+    public RandomPointSet(int n, int xMin, int xMax, int yMin, int yMax) {
+        this(n, new Interval(xMin, xMax), new Interval(yMin, yMax));
     }
 
-    public RandomPointSet(int n, Interval x_range, Interval y_range) {
+    public RandomPointSet(int n, Interval xRange, Interval yRange) {
 
-        if (x_range.getLength() < n) {
+        if (xRange.getLength() < n) {
             throw new IllegalArgumentException();
         }
 
-        if (y_range.getLength() < n) {
+        if (yRange.getLength() < n) {
             throw new IllegalArgumentException();
         }
 
         this.n = n;
-        this.x_range = x_range;
-        this.y_range = y_range;
+        this.xRange = xRange;
+        this.yRange = yRange;
         this.random = new Random();
     }
 
@@ -53,8 +53,8 @@ public class RandomPointSet implements PointSet {
     @Override
     public Set<Point> generate() {
         Set<Point> points = new HashSet<>();
-        Set<Integer> x_coordinates = generateCoordinates(x_range);
-        Set<Integer> y_coordinates = generateCoordinates(y_range);
+        Set<Integer> x_coordinates = generateCoordinates(xRange);
+        Set<Integer> y_coordinates = generateCoordinates(yRange);
 
         Iterator<Integer> x_generator = x_coordinates.iterator();
         Iterator<Integer> y_generator = y_coordinates.iterator();
