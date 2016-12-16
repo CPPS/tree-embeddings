@@ -9,31 +9,32 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-
-        // read from file or System.in
-        Scanner scanner = null;
-        if (args.length == 1) {
+        if (args.length >= 1) {
             String path = args[0];
-            try {
-                scanner = new Scanner(new File(path));
+            try (Scanner scanner = new Scanner(new File(path))) {
+                run(scanner);
             } catch (FileNotFoundException e) {
                 System.err.println("Could not read file (" + path + ") : " + e);
                 return;
             }
         } else {
-            scanner = new Scanner(System.in);
+            run(new Scanner(System.in));
         }
+    }
 
+    private static void run(Scanner scanner) {
         int n = scanner.nextInt();
         int k = scanner.nextInt();
 
         PointSet pointset = new RandomPointSet(n, new Interval(0, 100), new Interval(0, 100));
+        @SuppressWarnings("unused")
         Set<Point> P = pointset.generate();
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
             Iterable<int[]> sequences = new SequenceGenerator(code);
             for (int[] sequence : sequences) {
+                @SuppressWarnings("unused")
                 Tree T = TreeBuilder.fromSequence(sequence);
 
                 // generate embeddings of T onto P
