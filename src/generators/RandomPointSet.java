@@ -8,31 +8,26 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 public class RandomPointSet implements PointSet {
+    protected final Random random = new Random();
 
     protected int n;
-    protected Interval xRange;
-    protected Interval yRange;
-    protected Random random;
+    protected final Interval xRange;
+    protected final Interval yRange;
 
     public RandomPointSet(int n, int xMin, int xMax, int yMin, int yMax) {
         this(n, new Interval(xMin, xMax), new Interval(yMin, yMax));
     }
 
     public RandomPointSet(int n, Interval xRange, Interval yRange) {
-
-        if (xRange.getLength() < n) {
-            throw new IllegalArgumentException();
-        }
-
-        if (yRange.getLength() < n) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(xRange.getLength() >= n);
+        Preconditions.checkArgument(yRange.getLength() >= n);
 
         this.n = n;
         this.xRange = xRange;
         this.yRange = yRange;
-        this.random = new Random();
     }
 
     protected int randomCoordinate(Interval range) {
@@ -63,7 +58,7 @@ public class RandomPointSet implements PointSet {
             int x = x_generator.next();
             int y = y_generator.next();
 
-            Point point = new Point(x,y);
+            Point point = new Point(x, y);
             points.add(point);
         }
 
