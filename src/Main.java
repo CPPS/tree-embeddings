@@ -1,24 +1,29 @@
-import generators.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.Set;
+
+import generators.PointSet;
+import generators.RandomPointSet;
+import generators.SequenceGenerator;
+import generators.TreeBuilder;
+import generators.TreeCodeGenerator;
 import geometry.Point;
 import geometry.Tree;
 import math.Interval;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         if (args.length >= 1) {
             String path = args[0];
-            try (Scanner scanner = new Scanner(new File(path))) {
+            try (Scanner scanner = new Scanner(new File(path), "UTF-8")) {
                 run(scanner);
             } catch (FileNotFoundException e) {
                 System.err.println("Could not read file (" + path + ") : " + e);
                 return;
             }
         } else {
-            run(new Scanner(System.in));
+            run(new Scanner(System.in, "UTF-8"));
         }
     }
 
