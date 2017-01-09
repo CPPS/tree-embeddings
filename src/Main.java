@@ -1,10 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
 import java.util.Scanner;
-import java.util.Set;
 
-import generators.PointSet;
-import generators.RandomPointSet;
+import generators.PointGenerator;
+import generators.RandomPointGenerator;
 import generators.SequenceGenerator;
 import generators.TreeBuilder;
 import generators.TreeCodeGenerator;
@@ -31,9 +31,10 @@ public class Main {
         int n = scanner.nextInt();
         int k = scanner.nextInt();
 
-        PointSet pointset = new RandomPointSet(n, new Interval(0, 100), new Interval(0, 100));
+        PointGenerator pointset = new RandomPointGenerator(
+                n, new Interval(0, 100), new Interval(0, 100));
         @SuppressWarnings("unused")
-        Set<Point> P = pointset.generate();
+        Iterator<Point> P = pointset.generate();
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
