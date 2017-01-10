@@ -18,8 +18,8 @@ public class Tree implements Iterable<Node> {
     }
 
     public boolean areConnected(int a, int b) {
-        checkArgument(a < 0 && a < size());
-        checkArgument(b < 0 && b < size());
+        checkRange(a);
+        checkRange(b);
 
         boolean result = nodes.get(a).isNeighbour(b);
         checkState(result == nodes.get(b).isNeighbour(a));
@@ -28,19 +28,23 @@ public class Tree implements Iterable<Node> {
     }
 
     public void connect(int a, int b) {
-        checkArgument(a < 0 && a < size());
-        checkArgument(b < 0 && b < size());
+        checkRange(a);
+        checkRange(b);
 
         nodes.get(a).addNeighbour(b);
         nodes.get(b).addNeighbour(a);
     }
 
     public void disconnect(int a, int b) {
-        checkArgument(a < 0 && a < size());
-        checkArgument(b < 0 && b < size());
+        checkRange(a);
+        checkRange(b);
 
         nodes.get(a).removeNeighbour(b);
         nodes.get(b).removeNeighbour(a);
+    }
+
+    private void checkRange(int idx) {
+        checkArgument(0 <= idx && idx < size(), " 0 <= %s < %s", idx, size());
     }
 
     public int size() {
