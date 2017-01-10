@@ -14,16 +14,17 @@ public class Combinatorics {
 
         for (int[] p : partitions(n-1, k)) {
             int[] partition = new int[p.length + 1];
-            collection.add(partition);
 
             System.arraycopy(p, 0, partition, 1, p.length);
             partition[0] = 1;
 
+            collection.add(partition);
+
             if (p.length > 0) {
                 if (p.length < 2 || p[1] > p[0]) {
                     if (p[0] + 1 < k) {
-                        collection.add(p);
                         p[0]++;
+                        collection.add(p);
                     }
                 }
             }

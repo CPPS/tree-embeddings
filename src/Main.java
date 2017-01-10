@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -28,6 +29,7 @@ public class Main {
     }
 
     private static void run(Scanner scanner) {
+        // Amount of points to generate
         int n = scanner.nextInt();
         int k = scanner.nextInt();
 
@@ -38,6 +40,7 @@ public class Main {
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
+            System.out.println(Arrays.toString(code));
             Iterable<int[]> sequences = new SequenceGenerator(code);
             for (int[] sequence : sequences) {
                 @SuppressWarnings("unused")
