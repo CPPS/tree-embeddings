@@ -1,15 +1,8 @@
 package geometry;
 
+import lombok.Data;
+
+@Data
 public class Point {
-    public int x,y;
-
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public String toString() {
-        return "(" + x + "," + y + ')';
-    }
+    private final int x,y;
 }
