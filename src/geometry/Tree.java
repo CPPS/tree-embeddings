@@ -2,61 +2,45 @@ package geometry;
 
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
 public class Tree implements Iterable<Node> {
     protected List<Node> nodes;
 
     public Tree(int n) {
-        if (n < 1) {
-            throw new IllegalArgumentException();
-        }
+        checkArgument(n >= 1);
 
-        nodes = new ArrayList<>();
+        nodes = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             nodes.add(new Node());
         }
     }
 
     public boolean areConnected(int a, int b) {
-        if (0 > a || a > size()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (0 > b || b > size()) {
-            throw new IllegalArgumentException();
-        }
+        checkArgument(a < 0 && a < size());
+        checkArgument(b < 0 && b < size());
 
         boolean result = nodes.get(a).isNeighbour(b);
-        if (result != nodes.get(b).isNeighbour(a)) {
-            throw new IllegalStateException();
-        }
+        checkState(result == nodes.get(b).isNeighbour(a));
 
         return result;
     }
 
     public void connect(int a, int b) {
-        if (0 > a || a > size()) {
-            throw new IllegalArgumentException();
-        }
+        checkArgument(a < 0 && a < size());
+        checkArgument(b < 0 && b < size());
 
-        if (0 > b || b > size()) {
-            throw new IllegalArgumentException();
-        }
-
-        nodes.get(a).add(b);
-        nodes.get(b).add(a);
+        nodes.get(a).addNeighbour(b);
+        nodes.get(b).addNeighbour(a);
     }
 
     public void disconnect(int a, int b) {
-        if (0 > a || a > size()) {
-            throw new IllegalArgumentException();
-        }
+        checkArgument(a < 0 && a < size());
+        checkArgument(b < 0 && b < size());
 
-        if (0 > b || b > size()) {
-            throw new IllegalArgumentException();
-        }
-
-        nodes.get(a).remove(b);
-        nodes.get(b).remove(a);
+        nodes.get(a).removeNeighbour(b);
+        nodes.get(b).removeNeighbour(a);
     }
 
     public int size() {

@@ -1,21 +1,26 @@
 package geometry;
 
-import java.util.*;
+import com.koloboke.collect.set.IntSet;
+import com.koloboke.collect.set.hash.HashIntSets;
 
 public class Node {
-    protected Set<Integer> neighbours = new HashSet<>();
+    private final IntSet neighbours = HashIntSets.newMutableSet();
 
-    public void add(int node) {
+    // Package-private
+    void addNeighbour(int node) {
         neighbours.add(node);
     }
-    public void remove(int node) {
-        neighbours.remove(node);
+
+    // Package-private
+    void removeNeighbour(int node) {
+        neighbours.removeInt(node);
     }
+
     public boolean isNeighbour(int node) {
         return neighbours.contains(node);
     }
 
-    public Collection<Integer> getNeighbours() {
+    public IntSet getNeighbours() {
         return neighbours;
     }
 
