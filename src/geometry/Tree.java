@@ -95,7 +95,14 @@ public class Tree implements Iterable<Node> {
                     if (node != null) {
                         // Have a node, try to find an edge
                         if (cursor.moveNext()) {
-                            foundEdge = new Edge(idx, cursor.elem());
+                            int elem = cursor.elem();
+
+                            // We have already reported this (undirected)
+                            if (elem < idx) {
+                                continue;
+                            }
+
+                            foundEdge = new Edge(idx, elem);
                             return true;
                         }
 
