@@ -1,18 +1,17 @@
 package generators;
 
-public class IntQuickPerm extends AbstractQuickPerm<int[]> {
-
-    public IntQuickPerm(int[] in) {
+public class QuickPerm<T> extends AbstractQuickPerm<T[]> {
+    public QuickPerm(T[] in) {
         super(in);
     }
 
     @Override
-    protected int size(int[] in) {
+    protected int size(T[] in) {
         return in.length;
     }
 
     protected void swap(int i, int j) {
-        int v = a[i];
+        T v = a[i];
         a[i] = a[j];
         a[j] = v;
     }
