@@ -1,14 +1,18 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
+import com.google.common.collect.ImmutableList;
+
+import generators.IntQuickPerm;
 import generators.PointGenerator;
 import generators.RandomPointGenerator;
 import generators.SequenceGenerator;
 import generators.TreeBuilder;
 import generators.TreeCodeGenerator;
+import geometry.MappingValidator;
 import geometry.Point;
 import geometry.Tree;
 import math.Interval;
@@ -35,21 +39,40 @@ public class Main {
 
         PointGenerator pointset = new RandomPointGenerator(
                 n, new Interval(0, 100), new Interval(0, 100));
-        @SuppressWarnings("unused")
-        Iterator<Point> P = pointset.generate();
+        List<Point> P = ImmutableList.copyOf(pointset.generate());
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
-            System.out.println(Arrays.toString(code));
+            System.out.println(" > ");
             Iterable<int[]> sequences = new SequenceGenerator(code);
             for (int[] sequence : sequences) {
-                @SuppressWarnings("unused")
-                Tree T = TreeBuilder.fromSequence(sequence);
+                Tree t = TreeBuilder.fromSequence(sequence);
+
+                System.out.println(" >> ");
+
+                // node -> point mappings
+                int[] mappings = new int[t.size()];
+                for (int i = 0; i < mappings.length; i++) {
+                    mappings[i] = i;
+                }
 
                 // generate embeddings of T onto P
+                IntQuickPerm it = new IntQuickPerm(mappings);
+                while (it.hasNext()) {
+                    int[] mapping = it.next();
 
-                // validate embedding
+                    System.out.println("Mapping " + Arrays.toString(mapping));
+
+                    // validate embedding
+                    if (new MappingValidator().validate(t, mapping, P)) {
+                        System.out.println("Valid mapping: " + Arrays.toString(mapping));
+                        break;
+                    }
+                }
+
             }
         }
+
+        System.out.println(" < ");
     }
 }
