@@ -7,15 +7,12 @@ import java.util.Scanner;
 import com.google.common.collect.ImmutableList;
 
 import generators.IntQuickPerm;
-import generators.PointGenerator;
-import generators.RandomPointGenerator;
 import generators.SequenceGenerator;
 import generators.TreeBuilder;
 import generators.TreeCodeGenerator;
 import geometry.MappingValidator;
 import geometry.Point;
 import geometry.Tree;
-import math.Interval;
 
 public class Main {
     public static void main(String[] args) {
@@ -37,9 +34,12 @@ public class Main {
         int n = scanner.nextInt();
         int k = scanner.nextInt();
 
-        PointGenerator pointset = new RandomPointGenerator(
-                n, new Interval(0, 100), new Interval(0, 100));
-        List<Point> P = ImmutableList.copyOf(pointset.generate());
+        // PointGenerator pointset = new RandomPointGenerator(
+        // n, new Interval(0, n * 2), new Interval(0, n * 2));
+        // List<Point> P = ImmutableList.copyOf(pointset.generate());
+        List<Point> P = ImmutableList.of(
+                new Point(0, 0), new Point(3, 2), new Point(2, 4));
+        System.out.println(P);
 
         TreeCodeGenerator generator = new TreeCodeGenerator(n, k);
         for (int[] code : generator) {
@@ -60,8 +60,6 @@ public class Main {
                 IntQuickPerm it = new IntQuickPerm(mappings);
                 while (it.hasNext()) {
                     int[] mapping = it.next();
-
-                    System.out.println("Mapping " + Arrays.toString(mapping));
 
                     // validate embedding
                     if (new MappingValidator().validate(t, mapping, P)) {
