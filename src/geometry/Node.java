@@ -3,17 +3,21 @@ package geometry;
 import com.koloboke.collect.set.IntSet;
 import com.koloboke.collect.set.hash.HashIntSets;
 
+import java.util.Arrays;
+
 public class Node {
     private final IntSet neighbours = HashIntSets.newMutableSet();
 
-    // Package-private
-    void addNeighbour(int node) {
+    public void addNeighbour(int node) {
         neighbours.add(node);
     }
 
-    // Package-private
-    void removeNeighbour(int node) {
+    public void removeNeighbour(int node) {
         neighbours.removeInt(node);
+    }
+
+    public void removeAllNeighbours() {
+        neighbours.clear();
     }
 
     public boolean isNeighbour(int node) {
@@ -30,5 +34,10 @@ public class Node {
 
     public int getDegree() {
         return neighbours.size() + 1;
+    }
+
+    @Override
+    public String toString() {
+        return "{neighbours: " + Arrays.toString(neighbours.toIntArray()) + "}";
     }
 }
