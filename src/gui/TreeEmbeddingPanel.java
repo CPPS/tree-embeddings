@@ -1,11 +1,9 @@
 package gui;
 
 import com.google.common.collect.Lists;
-import generators.PointGenerator;
 import generators.RandomPointGenerator;
 import geometry.Edge;
 import geometry.LBend;
-import geometry.Line;
 import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;
@@ -15,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.*;
 import java.util.List;
 
@@ -212,7 +209,7 @@ public class TreeEmbeddingPanel extends JPanel {
         TreeEmbeddingPanel panel = showAsFrame();
 
         int n = 10;
-        PointGenerator generator = new RandomPointGenerator(n, new Interval(0, n), new Interval(0, n));
+        RandomPointGenerator generator = new RandomPointGenerator(n, new Interval(0, n), new Interval(0, n));
 
         Tree tree = new Tree(10);
         tree.connect(0, 1);
@@ -237,7 +234,7 @@ public class TreeEmbeddingPanel extends JPanel {
                 boolean valid;
                 do {
                     mappingValidator = new MappingValidator2SAT(n);
-                    points = Lists.newArrayList(generator.generate());
+                    points = Lists.newArrayList(generator.generate().next());
 
                     mapping = new int[n];
                     for (int j = 0; j < n; j++) mapping[j] = j;
