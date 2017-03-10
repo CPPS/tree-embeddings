@@ -1,6 +1,9 @@
 package gui;
 
 import com.google.common.collect.Lists;
+
+import generators.PermutedPointGenerator;
+import generators.PointSetGenerator;
 import generators.RandomPointGenerator;
 import geometry.Edge;
 import geometry.LBend;
@@ -11,6 +14,7 @@ import math.Interval;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -61,11 +65,11 @@ public class TreeEmbeddingPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (points == null) return;
+        if (points == null)
+            return;
 
         Graphics2D g2 = ((Graphics2D) g);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 
         /** Draw grid */
         g.setColor(Color.LIGHT_GRAY);
@@ -147,7 +151,7 @@ public class TreeEmbeddingPanel extends JPanel {
 
     private void drawDottedLine(Graphics g, int fromX, int fromY, int toX, int toY) {
         Graphics2D g2 = ((Graphics2D) g.create());
-        Stroke dashed = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+        Stroke dashed = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0);
         g2.setStroke(dashed);
         g2.drawLine(fromX, fromY, toX, toY);
 
@@ -209,7 +213,7 @@ public class TreeEmbeddingPanel extends JPanel {
         TreeEmbeddingPanel panel = showAsFrame();
 
         int n = 10;
-        RandomPointGenerator generator = new RandomPointGenerator(n, new Interval(0, n), new Interval(0, n));
+        PointSetGenerator generator = new PermutedPointGenerator(n);
 
         Tree tree = new Tree(10);
         tree.connect(0, 1);
@@ -222,40 +226,62 @@ public class TreeEmbeddingPanel extends JPanel {
         tree.connect(6, 8);
         tree.connect(7, 9);
 
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-
+        class MouseHandler extends MouseAdapter {
+            Iterator<Collection<Point>> pointIterator = generator.generate();
             boolean onlyShowValidMappings = true;
+            private Collection<Point> currentPointSet;
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.NOBUTTON) {
+                    return;
+                }
+
+                // Generate a new point set on right click.
+                boolean isRightClick = (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
+
+                doUpdate(isRightClick);
+            }
+
+            private void doUpdate(boolean nextPointset) {
+                if (currentPointSet == null || nextPointset) {
+                    // Loop
+                    if (!pointIterator.hasNext()) {
+                        pointIterator = generator.generate();
+                    }
+                    currentPointSet = pointIterator.next();
+                }
+
                 int[] mapping;
                 List<Point> points;
                 MappingValidator2SAT mappingValidator;
                 boolean valid;
                 do {
                     mappingValidator = new MappingValidator2SAT(n);
-                    points = Lists.newArrayList(generator.generate().next());
+                    points = Lists.newArrayList(currentPointSet);
 
                     mapping = new int[n];
-                    for (int j = 0; j < n; j++) mapping[j] = j;
+                    for (int j = 0; j < n; j++)
+                        mapping[j] = j;
 
                     panel.setTreeEmbedding(points, tree, mapping);
 
                     long start = System.currentTimeMillis();
                     valid = mappingValidator.validate(tree, mapping, points);
-                    System.out.println("ms: " + (System.currentTimeMillis() - start));
+                    System.out.println("ms: " + (System.currentTimeMillis() - start) + " " + valid);
                 } while (onlyShowValidMappings && !valid);
             }
-        };
+        }
+        MouseHandler mouseAdapter = new MouseHandler();
         panel.addMouseListener(mouseAdapter);
-        mouseAdapter.mouseClicked(null);
+        mouseAdapter.doUpdate(false);
 
         showTestPanel();
     }
 
     /**
-     * Test panel, 2SAT (initially) says there is no valid placement,
-     * while there is.
+     * Test panel, 2SAT (initially) says there is no valid placement, while
+     * there is.
      */
     public static void showTestPanel() {
         int n = 7;
@@ -276,7 +302,8 @@ public class TreeEmbeddingPanel extends JPanel {
                 new Point(5, 6),
                 new Point(6, 2));
         int[] mapping = new int[n];
-        for (int i = 0; i < n; i++) mapping[i] = i;
+        for (int i = 0; i < n; i++)
+            mapping[i] = i;
 
         showAsFrame().setTreeEmbedding(points, tree, mapping);
     }
