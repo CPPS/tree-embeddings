@@ -2,8 +2,6 @@ package geometry;
 
 import lombok.Data;
 
-import java.util.*;
-
 /**
  * Created by s148327 on 5-3-2017.
  */

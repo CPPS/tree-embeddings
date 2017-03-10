@@ -1,13 +1,7 @@
 package gui;
 
-import com.google.common.collect.Lists;
-import geometry.Edge;
 import geometry.LBend;
-import geometry.Line;
-import geometry.MappingValidator2SAT;
 import geometry.Point;
-import geometry.Tree;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
