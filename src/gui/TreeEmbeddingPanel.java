@@ -2,16 +2,14 @@ package gui;
 
 import com.google.common.collect.Lists;
 
+import generators.IntQuickPerm;
 import generators.PermutedPointGenerator;
 import generators.PointSetGenerator;
-import generators.RandomPointGenerator;
 import geometry.Edge;
 import geometry.LBend;
 import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;
-import math.Interval;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -228,8 +226,8 @@ public class TreeEmbeddingPanel extends JPanel {
 
         class MouseHandler extends MouseAdapter {
             Iterator<Collection<Point>> pointIterator = generator.generate();
-            boolean onlyShowValidMappings = true;
             private Collection<Point> currentPointSet;
+            int[] mapping = new int[n];
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -237,22 +235,21 @@ public class TreeEmbeddingPanel extends JPanel {
                     return;
                 }
 
-                // Generate a new point set on right click.
-                boolean isRightClick = (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
-
-                doUpdate(isRightClick);
+                doUpdate();
             }
 
-            private void doUpdate(boolean nextPointset) {
-                if (currentPointSet == null || nextPointset) {
-                    // Loop
-                    if (!pointIterator.hasNext()) {
-                        pointIterator = generator.generate();
-                    }
-                    currentPointSet = pointIterator.next();
+            private void doUpdate() {
+                // Loop
+                if (!pointIterator.hasNext()) {
+                    pointIterator = generator.generate();
+                }
+                currentPointSet = pointIterator.next();
+
+                for (int i = 0; i < mapping.length; i++) {
+                    mapping[i] = i;
                 }
 
-                int[] mapping;
+                IntQuickPerm mapper = new IntQuickPerm(mapping);
                 List<Point> points;
                 MappingValidator2SAT mappingValidator;
                 boolean valid;
@@ -260,23 +257,21 @@ public class TreeEmbeddingPanel extends JPanel {
                     mappingValidator = new MappingValidator2SAT(n);
                     points = Lists.newArrayList(currentPointSet);
 
-                    mapping = new int[n];
-                    for (int j = 0; j < n; j++)
-                        mapping[j] = j;
-
+                    mapper.next();
+                    System.out.println(Arrays.toString(mapping));
                     panel.setTreeEmbedding(points, tree, mapping);
 
                     long start = System.currentTimeMillis();
                     valid = mappingValidator.validate(tree, mapping, points);
                     System.out.println("ms: " + (System.currentTimeMillis() - start) + " " + valid);
-                } while (onlyShowValidMappings && !valid);
+                } while (!valid && mapper.hasNext());
             }
         }
         MouseHandler mouseAdapter = new MouseHandler();
         panel.addMouseListener(mouseAdapter);
-        mouseAdapter.doUpdate(false);
+        mouseAdapter.doUpdate();
 
-        showTestPanel();
+        // showTestPanel();
     }
 
     /**
