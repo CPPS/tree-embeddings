@@ -93,15 +93,6 @@ public class BendPanel extends JPanel {
         return (int) (getHeight() - verPadding - (((py - minY) * (getHeight() - 2 * verPadding)) / pointHeight));
     }
 
-    private void drawDottedLine(Graphics g, int fromX, int fromY, int toX, int toY) {
-        Graphics2D g2 = ((Graphics2D) g.create());
-        Stroke dashed = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-        g2.setStroke(dashed);
-        g2.drawLine(fromX, fromY, toX, toY);
-
-        g2.dispose();
-    }
-
     private void drawLBend(Graphics g, LBend bend) {
         Graphics2D g2 = ((Graphics2D) g.create());
         Stroke stroke = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);//new BasicStroke(2.4f);
