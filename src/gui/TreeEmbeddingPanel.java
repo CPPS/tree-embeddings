@@ -1,36 +1,55 @@
 package gui;
 
 import com.google.common.collect.Lists;
-import generators.PointGenerator;
-import generators.RandomPointGenerator;
+
 import geometry.Edge;
 import geometry.LBend;
-import geometry.Line;
 import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;
-import math.Interval;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.*;
+import javax.annotation.Nullable;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.util.List;
 
-/**
- * Created by s148327 on 5-3-2017.
- */
+@RequiredArgsConstructor
 public class TreeEmbeddingPanel extends JPanel {
+    @Getter
+    private final @NonNull JFrame frame;
 
-    private List<Point> points;
-    private Tree tree;
-    private int[] mapping;
+    private @Nullable List<Point> points;
+    private @Nullable Tree tree;
+    private @Nullable int[] mapping;
 
     private int minX, maxX, minY, maxY;
 
     private int horPadding = 30, verPadding = 30;
+
+    public static TreeEmbeddingPanel create() {
+        JFrame frame = new JFrame("Tree Embedding Panel");
+        frame.setPreferredSize(new Dimension(800, 800));
+
+        TreeEmbeddingPanel panel = new TreeEmbeddingPanel(frame);
+        frame.add(panel);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        return panel;
+    }
 
     public void setTreeEmbedding(List<Point> points) {
         setTreeEmbedding(points, null, null);
@@ -64,11 +83,11 @@ public class TreeEmbeddingPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (points == null) return;
+        if (points == null)
+            return;
 
         Graphics2D g2 = ((Graphics2D) g);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 
         /** Draw grid */
         g.setColor(Color.LIGHT_GRAY);
@@ -150,7 +169,7 @@ public class TreeEmbeddingPanel extends JPanel {
 
     private void drawDottedLine(Graphics g, int fromX, int fromY, int toX, int toY) {
         Graphics2D g2 = ((Graphics2D) g.create());
-        Stroke dashed = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+        Stroke dashed = new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0);
         g2.setStroke(dashed);
         g2.drawLine(fromX, fromY, toX, toY);
 
@@ -190,97 +209,5 @@ public class TreeEmbeddingPanel extends JPanel {
 
         g.setColor(Color.BLACK);
         g.drawString(text, x, y);
-    }
-
-    public static TreeEmbeddingPanel showAsFrame() {
-        JFrame frame = new JFrame("Tree Embedding Panel");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(800, 800));
-
-        TreeEmbeddingPanel panel = new TreeEmbeddingPanel();
-        frame.add(panel);
-
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        return panel;
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-
-        TreeEmbeddingPanel panel = showAsFrame();
-
-        int n = 10;
-        PointGenerator generator = new RandomPointGenerator(n, new Interval(0, n), new Interval(0, n));
-
-        Tree tree = new Tree(10);
-        tree.connect(0, 1);
-        tree.connect(1, 3);
-        tree.connect(1, 4);
-        tree.connect(0, 2);
-        tree.connect(2, 5);
-        tree.connect(2, 6);
-        tree.connect(6, 7);
-        tree.connect(6, 8);
-        tree.connect(7, 9);
-
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-
-            boolean onlyShowValidMappings = true;
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int[] mapping;
-                List<Point> points;
-                MappingValidator2SAT mappingValidator;
-                boolean valid;
-                do {
-                    mappingValidator = new MappingValidator2SAT(n);
-                    points = Lists.newArrayList(generator.generate());
-
-                    mapping = new int[n];
-                    for (int j = 0; j < n; j++) mapping[j] = j;
-
-                    panel.setTreeEmbedding(points, tree, mapping);
-
-                    long start = System.currentTimeMillis();
-                    valid = mappingValidator.validate(tree, mapping, points);
-                    System.out.println("ms: " + (System.currentTimeMillis() - start));
-                } while (onlyShowValidMappings && !valid);
-            }
-        };
-        panel.addMouseListener(mouseAdapter);
-        mouseAdapter.mouseClicked(null);
-
-        showTestPanel();
-    }
-
-    /**
-     * Test panel, 2SAT (initially) says there is no valid placement,
-     * while there is.
-     */
-    public static void showTestPanel() {
-        int n = 7;
-        Tree tree = new Tree(n);
-        tree.connect(2, 1);
-        tree.connect(2, 3);
-        tree.connect(1, 0);
-        tree.connect(1, 4);
-        tree.connect(3, 5);
-        tree.connect(3, 6);
-
-        List<Point> points = Arrays.asList(
-                new Point(0, 1),
-                new Point(1, 3),
-                new Point(2, 0),
-                new Point(3, 4),
-                new Point(4, 5),
-                new Point(5, 6),
-                new Point(6, 2));
-        int[] mapping = new int[n];
-        for (int i = 0; i < n; i++) mapping[i] = i;
-
-        showAsFrame().setTreeEmbedding(points, tree, mapping);
     }
 }

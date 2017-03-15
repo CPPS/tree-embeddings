@@ -3,17 +3,21 @@ package generators;
 import geometry.Point;
 import math.Interval;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.function.IntSupplier;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.koloboke.collect.set.hash.HashIntSet;
 import com.koloboke.collect.set.hash.HashIntSets;
 
-public class RandomPointGenerator implements PointGenerator {
+public class RandomPointGenerator implements PointSetGenerator {
     private final Random random = new Random();
 
     private final int n;
@@ -47,26 +51,18 @@ public class RandomPointGenerator implements PointGenerator {
     }
 
     @Override
-    public Iterator<Point> generate() {
+    public Iterator<Collection<Point>> generate() {
         IntSupplier xGenerator = generateCoordinates(xRange);
         IntSupplier yGenerator = generateCoordinates(yRange);
 
-        return new Iterator<Point>() {
-            int i = 0;
+        List<Point> out = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            int x = xGenerator.getAsInt();
+            int y = yGenerator.getAsInt();
 
-            @Override
-            public boolean hasNext() {
-                return i < n;
-            }
+            out.add(new Point(x, y));
+        }
 
-            @Override
-            public Point next() {
-                int x = xGenerator.getAsInt();
-                int y = yGenerator.getAsInt();
-
-                i++;
-                return new Point(x, y);
-            }
-        };
+        return ImmutableList.<Collection<Point>> of(out).iterator();
     }
 }

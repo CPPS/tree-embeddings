@@ -2,7 +2,6 @@ package geometry;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import gui.BendPanel;
 import math.Solver2SAT;
 
 import java.util.*;
