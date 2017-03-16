@@ -4,16 +4,17 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class SequenceGenerator implements Iterable<int[]> {
-    protected int[] code;
-    int n;
+    private final int[] code;
+    private final int n;
 
     public SequenceGenerator(int[] code) {
         this.code = code;
 
-        this.n = 2;
+        int n = 2;
         for (int i : code) {
-            this.n += i;
+            n += i;
         }
+        this.n = n;
     }
 
     protected int[] map(int[] source) {
@@ -59,7 +60,7 @@ public class SequenceGenerator implements Iterable<int[]> {
                     int idx = len - 1;
                     source[idx]++;
 
-                    while(source[idx] < n && ((idx > 0) && source[idx] >= source[idx - 1])) {
+                    while (source[idx] < n && ((idx > 0) && source[idx] >= source[idx - 1])) {
                         idx--;
                         source[idx]++;
                         source[idx + 1] = source.length - idx - 2;

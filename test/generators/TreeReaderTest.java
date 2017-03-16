@@ -3,11 +3,7 @@ package generators;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-
 import org.junit.Test;
-
-import geometry.Tree;
 
 public class TreeReaderTest {
 	
