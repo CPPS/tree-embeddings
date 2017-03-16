@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -19,7 +18,9 @@ public class BendsGenerator {
     private final Callback cb;
 
     interface Callback {
-        void on(Tree tree, Collection<Point> points, @Nullable int[] mapping);
+        void on(
+                Tree tree, Collection<Point> points,
+                @Nullable int[] mapping, @Nullable boolean[] solution);
     }
 
     BendsGenerator(
@@ -45,28 +46,29 @@ public class BendsGenerator {
         Iterator<Collection<Point>> it = pointGen.generate();
         while (it.hasNext()) {
             Collection<Point> point = it.next();
-            int[] mapping = run(tree, point);
-            cb.on(tree, point, mapping);
+            boolean[] solution = run(tree, point);
+            cb.on(tree, point, mapping, solution);
         }
     }
 
-    private int[] run(Tree tree, Collection<Point> points) {
+    private boolean[] run(Tree tree, Collection<Point> points) {
         for (int i = 0; i < n; i++) {
             mapping[i] = i;
         }
 
         IntQuickPerm mapper = new IntQuickPerm(mapping);
         while (mapper.hasNext()) {
-            if (run(tree, points, mapping)) {
-                return mapping;
+            boolean[] solution = run(tree, points, mapping);
+            if (solution != null) {
+                return solution;
             }
         }
 
         return null;
     }
 
-    private boolean run(Tree tree, Collection<Point> points, int[] mapping) {
-        return validator.validate(tree, mapping, new ArrayList<>(points));
+    private boolean[] run(Tree tree, Collection<Point> points, int[] mapping) {
+        return validator.validateWithSolution(tree, mapping, new ArrayList<>(points));
     }
 
 }

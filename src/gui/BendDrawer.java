@@ -74,7 +74,6 @@ public class BendDrawer {
 
         /** Draw tree and mapping */
         for (LBend bend : bends) {
-
             drawLBend(g, bend);
         }
     }

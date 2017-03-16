@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -13,12 +14,14 @@ public class Main {
         Iterator<Tree> treeGen = TreeIterator.iterable(n, k).iterator();
         MappingValidator2SAT mappingValidator = new MappingValidator2SAT(n);
 
+        Dumper dumper = new Dumper();
+
         int[] cnt = new int[1];
         new BendsGenerator(
                 treeGen,
                 mappingValidator,
                 n,
-                (tree, points, mapping) -> {
+                (tree, points, mapping, solution) -> {
                     int i = ++cnt[0];
                     if (mapping == null) {
                         throw new RuntimeException("" +
@@ -29,6 +32,8 @@ public class Main {
                     System.out.println("" +
                             i + " " + points + " " +
                             Arrays.toString(mapping));
+
+                    dumper.draw(i, tree, new ArrayList<>(points), mapping, solution);
                 }).run();
     }
 }
