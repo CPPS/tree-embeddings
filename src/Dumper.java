@@ -16,7 +16,7 @@ import geometry.Tree;
 import gui.BendDrawer;
 
 public class Dumper {
-    private final File targetDir = new File("target");
+    private final File targetDir = new File("target/dump");
     private final int w = 512;
     private final int h = w;
     private final int[] EMPTY_ROW = new int[w];
@@ -26,6 +26,8 @@ public class Dumper {
     private final BendDrawer drawer = new BendDrawer();
 
     public Dumper() {
+        boolean suc = targetDir.mkdirs();
+        assert suc;
         drawer.setWidth(w);
         drawer.setHeight(h);
         drawer.setBackground(new Color(0, 0, 0, 0));

@@ -1,17 +1,17 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import generators.TreeIterator;
+import generators.TreeReader;
 import geometry.MappingValidator2SAT;
 import geometry.Tree;
 
 public class Main {
-    public static void main(String[] args) {
-        int n = 5;
-        int k = 4;
+    public static void main(String[] args) throws Exception {
+        int n = 8;
+        File dir = new File("trees");
 
-        Iterator<Tree> treeGen = TreeIterator.iterable(n, k).iterator();
+        Iterator<Tree> treeGen = new TreeReader(dir, n);
         MappingValidator2SAT mappingValidator = new MappingValidator2SAT(n);
 
         Dumper dumper = new Dumper();
