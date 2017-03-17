@@ -8,8 +8,8 @@ import geometry.Tree;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 3;
-        int k = 3;
+        int n = 5;
+        int k = 4;
 
         Iterator<Tree> treeGen = TreeIterator.iterable(n, k).iterator();
         MappingValidator2SAT mappingValidator = new MappingValidator2SAT(n);

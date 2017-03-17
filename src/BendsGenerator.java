@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+
 import generators.IntQuickPerm;
 import generators.PermutedPointGenerator;
 import geometry.MappingValidator2SAT;
@@ -58,6 +60,7 @@ public class BendsGenerator {
 
         IntQuickPerm mapper = new IntQuickPerm(mapping);
         while (mapper.hasNext()) {
+            mapper.next();
             boolean[] solution = run(tree, points, mapping);
             if (solution != null) {
                 return solution;
