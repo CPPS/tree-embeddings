@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 
-import generators.TreeReader;
+import generator.TreeReader;
 import geometry.Tree;
 
 public class Main {

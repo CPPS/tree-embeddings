@@ -1,4 +1,4 @@
-package generators;
+package generator.tree;
 
 import java.util.Iterator;
 

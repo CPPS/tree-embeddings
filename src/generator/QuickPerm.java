@@ -1,4 +1,4 @@
-package generators;
+package generator;
 
 public class QuickPerm<T> extends AbstractQuickPerm<T[]> {
     public QuickPerm(T[] in) {

@@ -1,4 +1,4 @@
-package generators;
+package generator;
 
 import java.util.BitSet;
 import java.util.Iterator;

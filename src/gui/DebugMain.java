@@ -11,9 +11,9 @@ import javax.swing.WindowConstants;
 
 import com.google.common.collect.Lists;
 
-import generators.IntQuickPerm;
-import generators.PermutedPointGenerator;
-import generators.PointSetGenerator;
+import generator.IntQuickPerm;
+import generator.point.PermutedPointGenerator;
+import generator.point.PointSetGenerator;
 import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;

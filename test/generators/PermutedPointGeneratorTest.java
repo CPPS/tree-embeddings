@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import generator.point.PermutedPointGenerator;
 import geometry.Point;
 
 public class PermutedPointGeneratorTest {

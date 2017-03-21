@@ -1,10 +1,11 @@
-package generators;
+package generator.point;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import generator.IntQuickPerm;
 import geometry.MutablePoint;
 import geometry.Point;
 import lombok.RequiredArgsConstructor;

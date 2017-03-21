@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import generators.BitsPerm;
+import generator.BitsPerm;
 
 public class MappingValidator {
     public boolean validate(Tree t, int[] mapping, List<Point> p) {

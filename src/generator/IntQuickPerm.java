@@ -1,4 +1,4 @@
-package generators;
+package generator;
 
 public class IntQuickPerm extends AbstractQuickPerm<int[]> {
 

@@ -10,8 +10,8 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
-import generators.IntQuickPerm;
-import generators.PermutedPointGenerator;
+import generator.IntQuickPerm;
+import generator.point.PermutedPointGenerator;
 import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;

@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import generator.IntQuickPerm;
+
 public class IntQuickPermTest {
     @Test
     public void test() {

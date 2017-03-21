@@ -7,6 +7,8 @@ import org.junit.Test;
 import com.koloboke.collect.set.hash.HashLongSet;
 import com.koloboke.collect.set.hash.HashLongSets;
 
+import generator.BitsPerm;
+
 public class BitsQuickPermTest {
     @Test
     public void test() {

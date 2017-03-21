@@ -1,4 +1,4 @@
-package generators;
+package generator.point;
 
 import geometry.Point;
 
