@@ -6,12 +6,7 @@ import math.Solver2SAT;
 
 import java.util.*;
 
-/**
- * Created by s148327 on 5-3-2017.
- */
 public class MappingValidator2SAT {
-
-
     private Solver2SAT solver;
 
     public MappingValidator2SAT(int n) {
