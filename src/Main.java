@@ -12,6 +12,8 @@ import generator.TreeReader;
 import geometry.Tree;
 
 public class Main {
+    // Recommended JVM flags:
+    // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
         int n = 7;
         File dir = new File("trees");
