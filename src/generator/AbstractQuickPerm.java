@@ -25,6 +25,14 @@ public abstract class AbstractQuickPerm<T> implements Iterator<T> {
         N = size(in);
         a = in;
         p = new int[N];
+        reset();
+    }
+
+    public void reset() {
+        for (int i = 0; i < N; i++) {
+            p[i] = 0;
+        }
+
         i = 1;
     }
 

@@ -74,6 +74,7 @@ public class BendsGenerator {
         private final CountDownLatch doneSignal;
         private final int n;
         private final int[] mapping;
+        private final IntQuickPerm mapper;
         private final MappingValidator2SAT validator;
         private final Callback cb;
         private final PermutedPointGenerator pointGen;
@@ -87,6 +88,7 @@ public class BendsGenerator {
             this.doneSignal = doneSignal;
             this.n = n;
             this.mapping = new int[n];
+            this.mapper = new IntQuickPerm(mapping);
             this.validator = new MappingValidator2SAT(n);
             this.pointGen = new PermutedPointGenerator(n);
             this.cb = cb;
@@ -127,7 +129,7 @@ public class BendsGenerator {
                 mapping[i] = i;
             }
 
-            IntQuickPerm mapper = new IntQuickPerm(mapping);
+            mapper.reset();
             while (mapper.hasNext()) {
                 mapper.next();
                 boolean[] solution = run(tree, points, mapping);
