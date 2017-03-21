@@ -11,8 +11,8 @@ public class MappingValidator2SATTest {
 
     @Test
     public void testIntersects() throws Exception {
-        Line horizontal = new Line(new Point(1, 1), new Point(5, 1));
-        Line vertical = new Line(new Point(4, 1), new Point(4, 3));
+        Line horizontal = new Line(new FixedPoint(1, 1), new FixedPoint(5, 1));
+        Line vertical = new Line(new FixedPoint(4, 1), new FixedPoint(4, 3));
 
         assertTrue(MappingValidator2SAT.intersects(horizontal, vertical));
     }

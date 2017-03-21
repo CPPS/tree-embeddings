@@ -1,10 +1,12 @@
 package generators;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import geometry.MutablePoint;
 import geometry.Point;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +24,13 @@ public class PermutedPointGenerator implements PointSetGenerator {
         }
 
         IntQuickPerm Q = new IntQuickPerm(y);
-        List<Point> points = new ArrayList<>(n);
+
+        // Prepare output list
+        MutablePoint[] points = new MutablePoint[n];
+        for (int x = 0; x < n; x++) {
+            points[x] = new MutablePoint(x, -1);
+        }
+        List<Point> out = Collections.unmodifiableList(Arrays.asList(points));
 
         return new Iterator<Collection<Point>>() {
             @Override
@@ -35,12 +43,11 @@ public class PermutedPointGenerator implements PointSetGenerator {
                 Q.next();
 
                 // Transform the output
-                points.clear();
                 for (int x = 0; x < n; x++) {
-                    points.add(new Point(x, y[x]));
+                    points[x].setY(y[x]);
                 }
 
-                return points;
+                return out;
             }
         };
     }

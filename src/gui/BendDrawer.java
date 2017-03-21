@@ -68,8 +68,9 @@ public class BendDrawer {
         g.setColor(Color.DARK_GRAY);
         int pr = 6;
         for (Point point : points) {
-            g.fillOval(pointToPixelX(point.getX()) - pr, pointToPixelY(point.getY()) - pr,
-                    2 * pr + 1, 2 * pr + 1);
+            int x = pointToPixelX(point.getX()) - pr;
+            int y = pointToPixelY(point.getY()) - pr;
+            g.fillOval(x, y, 2 * pr + 1, 2 * pr + 1);
         }
 
         /** Draw tree and mapping */

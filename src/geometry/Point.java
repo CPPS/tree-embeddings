@@ -1,8 +1,7 @@
 package geometry;
 
-import lombok.Data;
+public interface Point {
+    int getX();
 
-@Data
-public class Point {
-    private final int x,y;
+    int getY();
 }

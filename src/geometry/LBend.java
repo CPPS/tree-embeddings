@@ -21,12 +21,12 @@ public class LBend {
         // -| true
 
         Line horizontal = complement
-                ? new Line(p1, new Point(p2.getX(), p1.getY()))
-                : new Line(p2, new Point(p1.getX(), p2.getY()));
+                ? new Line(p1, new FixedPoint(p2.getX(), p1.getY()))
+                : new Line(p2, new FixedPoint(p1.getX(), p2.getY()));
 
         Line vertical = complement
-                ? new Line(p2, new Point(p2.getX(), p1.getY()))
-                : new Line(p1, new Point(p1.getX(), p2.getY()));
+                ? new Line(p2, new FixedPoint(p2.getX(), p1.getY()))
+                : new Line(p1, new FixedPoint(p1.getX(), p2.getY()));
 
         return new LBend(horizontal, vertical);
     }

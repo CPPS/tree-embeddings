@@ -152,7 +152,7 @@ public class MappingValidator {
                 Set<Point> pointSet = Sets.newHashSet(p);
                 for (int y = 0; y <= maxY; y++) {
                     for (int x = 0; x <= maxX; x++) {
-                        if (pointSet.contains(new Point(x, y))) {
+                        if (pointSet.contains(new FixedPoint(x, y))) {
                             System.out.print("X");
                         } else if (grid.get(x * (maxY + 1) + y)) {
                             System.out.print("*");

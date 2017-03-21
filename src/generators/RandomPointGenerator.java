@@ -1,5 +1,6 @@
 package generators;
 
+import geometry.FixedPoint;
 import geometry.Point;
 import math.Interval;
 
@@ -60,7 +61,7 @@ public class RandomPointGenerator implements PointSetGenerator {
             int x = xGenerator.getAsInt();
             int y = yGenerator.getAsInt();
 
-            out.add(new Point(x, y));
+            out.add(new FixedPoint(x, y));
         }
 
         return ImmutableList.<Collection<Point>> of(out).iterator();

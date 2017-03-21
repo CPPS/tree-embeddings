@@ -76,6 +76,7 @@ public class BendsGenerator {
         private final int[] mapping;
         private final MappingValidator2SAT validator;
         private final Callback cb;
+        private final PermutedPointGenerator pointGen;
 
         public Runner(
                 BlockingQueue<Tree> Q,
@@ -87,6 +88,7 @@ public class BendsGenerator {
             this.n = n;
             this.mapping = new int[n];
             this.validator = new MappingValidator2SAT(n);
+            this.pointGen = new PermutedPointGenerator(n);
             this.cb = cb;
         }
 
@@ -112,7 +114,6 @@ public class BendsGenerator {
         }
 
         private void run(Tree tree) {
-            PermutedPointGenerator pointGen = new PermutedPointGenerator(n);
             Iterator<Collection<Point>> it = pointGen.generate();
             while (it.hasNext()) {
                 Collection<Point> point = it.next();
