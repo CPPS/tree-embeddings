@@ -49,5 +49,7 @@ public class Main {
         System.out.println("Took: " + ms + "ms");
         // Initial time for 7 . . . . -> 83,264 ms
         // After removing lambda in dfs: 61.608ms
+
+        executor.shutdown();
     }
 }

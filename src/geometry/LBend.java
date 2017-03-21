@@ -2,12 +2,8 @@ package geometry;
 
 import lombok.Data;
 
-/**
- * Created by s148327 on 5-3-2017.
- */
 @Data
 public class LBend {
-
     private final Line horizontal, vertical;
 
     public boolean intersectsWith(LBend other) {
