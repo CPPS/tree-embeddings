@@ -25,7 +25,7 @@ public class DebugMain {
         private final @NonNull Tree tree;
         private final @NonNull TreeEmbeddingPanel panel;
 
-        private Iterator<Collection<Point>> pointIterator;
+        private Iterator<List<Point>> pointIterator;
         private Collection<Point> currentPointSet;
         private final int[] mapping;
 

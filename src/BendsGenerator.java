@@ -114,15 +114,15 @@ public class BendsGenerator {
         }
 
         private void run(Tree tree) {
-            Iterator<Collection<Point>> it = pointGen.generate();
+            Iterator<List<Point>> it = pointGen.generate();
             while (it.hasNext()) {
-                Collection<Point> point = it.next();
+                List<Point> point = it.next();
                 boolean[] solution = run(tree, point);
                 cb.on(tree, point, mapping, solution);
             }
         }
 
-        private boolean[] run(Tree tree, Collection<Point> points) {
+        private boolean[] run(Tree tree, List<Point> points) {
             for (int i = 0; i < n; i++) {
                 mapping[i] = i;
             }
@@ -139,11 +139,11 @@ public class BendsGenerator {
             return null;
         }
 
-        private boolean[] run(Tree tree, Collection<Point> points, int[] mapping) {
+        private boolean[] run(Tree tree, List<Point> points, int[] mapping) {
             return validator.validateWithSolution(
                     tree,
                     mapping,
-                    new ArrayList<>(points));
+                    points);
         }
     }
 }

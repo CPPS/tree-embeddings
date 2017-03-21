@@ -2,8 +2,8 @@ package generators;
 
 import geometry.Point;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public interface PointSetGenerator {
     /**
@@ -11,5 +11,5 @@ public interface PointSetGenerator {
      *         Elements returned by this iterator may become invalid after the
      *         next {@link Iterator#next()} call.
      */
-    Iterator<Collection<Point>> generate();
+    Iterator<List<Point>> generate();
 }

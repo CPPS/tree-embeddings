@@ -3,6 +3,9 @@ package math;
 import geometry.Node;
 
 import javax.annotation.Nullable;
+
+import com.koloboke.collect.IntCursor;
+
 import java.util.*;
 
 /**
@@ -12,7 +15,8 @@ public class Solver2SAT {
 
     /**
      * Implemented using:
-     * https://kartikkukreja.wordpress.com/2013/05/16/solving-2-sat-in-linear-time/
+     * https://kartikkukreja.wordpress.com/2013/05/16/solving-2-sat-in-linear-
+     * time/
      *
      * Also called Implication Graph
      */
@@ -47,18 +51,16 @@ public class Solver2SAT {
     }
 
     /**
-     * Adds a clause to the 2-SAT problem.
-     * ... AND (i OR j)
+     * Adds a clause to the 2-SAT problem. ... AND (i OR j)
      *
-     * if complementI, then !i is placed in formula
-     * same for j
+     * if complementI, then !i is placed in formula same for j
      *
-     * for (u OR v) following edges are placed:
-     * !u -> v
-     * !v -> u
+     * for (u OR v) following edges are placed: !u -> v !v -> u
      *
-     * @param i 0 <= i < n
-     * @param j 0 <= j < n
+     * @param i
+     *            0 <= i < n
+     * @param j
+     *            0 <= j < n
      */
     public Solver2SAT addClause(int i, boolean complementI, int j, boolean complementJ) {
         int u = complementI ? n + i : i;
@@ -75,8 +77,8 @@ public class Solver2SAT {
     }
 
     /**
-     * Get a satisfying assignment of the 2SAT,
-     * or null when not satisfiable.
+     * Get a satisfying assignment of the 2SAT, or null when not satisfiable.
+     * 
      * @return boolean assignment or null when not satisfiable
      */
     @Nullable
@@ -106,13 +108,15 @@ public class Solver2SAT {
             }
         }
 
-        // check if a variable and its complement belong in the same SCC in reverse postorder
+        // check if a variable and its complement belong in the same SCC in
+        // reverse postorder
         // and assign truth values to SCC
         int i = size - 1;
         while (i >= 0) {
             int u = order[i];
             if (u >= n) {
-                if (stronglyConnected(u, u - n)) break;
+                if (stronglyConnected(u, u - n))
+                    break;
                 if (!hasTruthAssignment[leader[u - n]]) {
                     hasTruthAssignment[leader[u]] = true;
                     hasTruthAssignment[leader[u - n]] = true;
@@ -120,7 +124,8 @@ public class Solver2SAT {
                     truthAssignment[leader[u - n]] = false;
                 }
             } else {
-                if (stronglyConnected(u, u + n)) break;
+                if (stronglyConnected(u, u + n))
+                    break;
                 if (!hasTruthAssignment[leader[u]]) {
                     hasTruthAssignment[leader[u]] = true;
                     hasTruthAssignment[leader[u + n]] = true;
@@ -132,7 +137,6 @@ public class Solver2SAT {
             i--;
         }
 
-
         if (i >= 0) {
             // no satisfying assignment
             return null;
@@ -143,7 +147,6 @@ public class Solver2SAT {
             solution[i] = truthAssignment[leader[i]];
         }
 
-
         return solution;
     }
 
@@ -151,8 +154,10 @@ public class Solver2SAT {
      * Resets the 2SAT, removing any present clauses.
      */
     public void reset() {
-        for (Node node : graph) node.removeAllNeighbours();
-        for (Node node : graphReverse) node.removeAllNeighbours();
+        for (Node node : graph)
+            node.removeAllNeighbours();
+        for (Node node : graphReverse)
+            node.removeAllNeighbours();
     }
 
     private boolean stronglyConnected(int i, int j) {
@@ -163,16 +168,26 @@ public class Solver2SAT {
         explored[i] = true;
         leader[i] = parent;
 
-        graph[i].getNeighbours().stream()
-                .filter(neighbour -> !explored[neighbour])
-                .forEach(this::dfs);
+        IntCursor cursor = graph[i].getNeighbours().cursor();
+        while (cursor.moveNext()) {
+            int neighbour = cursor.elem();
+            if (!explored[neighbour]) {
+                dfs(neighbour);
+            }
+        }
     }
 
     private void reverseDfs(int i) {
         explored[i] = true;
-        graphReverse[i].getNeighbours().stream()
-                .filter(neighbour -> !explored[neighbour])
-                .forEach(this::reverseDfs);
+
+        IntCursor cursor = graphReverse[i].getNeighbours().cursor();
+        while (cursor.moveNext()) {
+            int neighbour = cursor.elem();
+            if (!explored[neighbour]) {
+                reverseDfs(neighbour);
+            }
+        }
+
         finish[i] = t;
         t++;
     }

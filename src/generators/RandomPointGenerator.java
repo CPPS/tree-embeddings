@@ -5,7 +5,6 @@ import geometry.Point;
 import math.Interval;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -52,7 +51,7 @@ public class RandomPointGenerator implements PointSetGenerator {
     }
 
     @Override
-    public Iterator<Collection<Point>> generate() {
+    public Iterator<List<Point>> generate() {
         IntSupplier xGenerator = generateCoordinates(xRange);
         IntSupplier yGenerator = generateCoordinates(yRange);
 
@@ -64,6 +63,6 @@ public class RandomPointGenerator implements PointSetGenerator {
             out.add(new FixedPoint(x, y));
         }
 
-        return ImmutableList.<Collection<Point>> of(out).iterator();
+        return ImmutableList.of(out).iterator();
     }
 }

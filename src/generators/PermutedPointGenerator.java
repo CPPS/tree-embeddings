@@ -1,7 +1,6 @@
 package generators;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +14,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
     private final int n;
 
     @Override
-    public Iterator<Collection<Point>> generate() {
+    public Iterator<List<Point>> generate() {
         // Array of Y coordinates
         // Points are represented as [x] = y
         int[] y = new int[n];
@@ -32,14 +31,14 @@ public class PermutedPointGenerator implements PointSetGenerator {
         }
         List<Point> out = Collections.unmodifiableList(Arrays.asList(points));
 
-        return new Iterator<Collection<Point>>() {
+        return new Iterator<List<Point>>() {
             @Override
             public boolean hasNext() {
                 return Q.hasNext();
             }
 
             @Override
-            public Collection<Point> next() {
+            public List<Point> next() {
                 Q.next();
 
                 // Transform the output

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class PermutedPointGeneratorTest {
         }
 
         Set<Set<Point>> seen = new HashSet<>();
-        Iterator<Collection<Point>> it = new PermutedPointGenerator(4).generate();
+        Iterator<List<Point>> it = new PermutedPointGenerator(4).generate();
         while (it.hasNext()) {
             Collection<Point> set = it.next();
             n--;
