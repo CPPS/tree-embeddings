@@ -33,7 +33,7 @@ public class Node {
     }
 
     public int getDegree() {
-        return neighbours.size() + 1;
+        return neighbours.size();
     }
 
     @Override

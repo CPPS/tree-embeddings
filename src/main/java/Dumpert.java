@@ -15,7 +15,7 @@ import geometry.Point;
 import geometry.Tree;
 import gui.BendDrawer;
 
-public class Dumper {
+public class Dumpert {
     private final File targetDir = new File("target/dump");
     private final int w = 512;
     private final int h = w;
@@ -25,7 +25,7 @@ public class Dumper {
     private final Graphics2D graphics = bi.createGraphics();
     private final BendDrawer drawer = new BendDrawer();
 
-    public Dumper() {
+    public Dumpert() {
         boolean suc = targetDir.mkdirs();
         assert suc;
         drawer.setWidth(w);

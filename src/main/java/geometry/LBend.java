@@ -2,6 +2,8 @@ package geometry;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class LBend {
     private final Line horizontal, vertical;
@@ -25,5 +27,28 @@ public class LBend {
                 : new Line(p1, new FixedPoint(p1.getX(), p2.getY()));
 
         return new LBend(horizontal, vertical);
+    }
+
+    /**
+     * Creates all possible bends on the given point set.
+     * result[i][j] contains 2-valued array with the two
+     * possible bends from point i to point j.
+     * First value is with complement==true, second value
+     * with complement==false.
+     * @param points the point set
+     * @return all bends over point set
+     */
+    public static LBend[][][] createAllBends(List<Point> points) {
+        int n = points.size();
+        LBend[][][] bends = new LBend[n][n][2];
+        for (int from = 0; from < n; from++) {
+            for (int to = 0; to < n; to++) {
+                if (from == to) continue;
+
+                bends[from][to][0] = getBend(points.get(from), points.get(to), true);
+                bends[from][to][1] = getBend(points.get(from), points.get(to), false);
+            }
+        }
+        return bends;
     }
 }

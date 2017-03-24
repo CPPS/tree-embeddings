@@ -1,3 +1,13 @@
+import generator.IntQuickPerm;
+import generator.point.PermutedPointGenerator;
+import geometry.MappingValidator2SAT;
+import geometry.Point;
+import geometry.Tree;
+import mappings.MappingFinder;
+import mappings.QuickMappingFinder;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -6,15 +16,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-
-import generator.IntQuickPerm;
-import generator.point.PermutedPointGenerator;
-import geometry.MappingValidator2SAT;
-import geometry.Point;
-import geometry.Tree;
 
 public class BendsGenerator {
     private static final Tree DONE = new Tree(1);
@@ -74,7 +75,6 @@ public class BendsGenerator {
         private final CountDownLatch doneSignal;
         private final int n;
         private final int[] mapping;
-        private final IntQuickPerm mapper;
         private final MappingValidator2SAT validator;
         private final Callback cb;
         private final PermutedPointGenerator pointGen;
@@ -88,7 +88,6 @@ public class BendsGenerator {
             this.doneSignal = doneSignal;
             this.n = n;
             this.mapping = new int[n];
-            this.mapper = new IntQuickPerm(mapping);
             this.validator = new MappingValidator2SAT(n);
             this.pointGen = new PermutedPointGenerator(n);
             this.cb = cb;
@@ -125,17 +124,17 @@ public class BendsGenerator {
         }
 
         private boolean[] run(Tree tree, List<Point> points) {
-            for (int i = 0; i < n; i++) {
-                mapping[i] = i;
-            }
+            // TODO: refactor such that it becomes For each pointset -> For each tree
+            // instead of For each tree -> For each pointset
+            // to make use of mapping finders optimizations per point set
+            MappingFinder finder = new QuickMappingFinder(points);
+            if (finder.findMapping(tree, mapping)) {
+                // found valid mapping
 
-            mapper.reset();
-            while (mapper.hasNext()) {
-                mapper.next();
-                boolean[] solution = run(tree, points, mapping);
-                if (solution != null) {
-                    return solution;
-                }
+                // get placement of bends
+                // TODO: we do not want to do this for each tree, pointset and mapping,
+                // as finding A mapping is enough, and ensures a valid placement of bends is possible
+                return run(tree, points, mapping);
             }
 
             return null;

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import math.Solver2SAT;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class MappingValidator2SAT {
@@ -27,6 +28,7 @@ public class MappingValidator2SAT {
         return validateWithSolution(tree, mapping, points) != null;
     }
 
+    @Nullable
     public boolean[] validateWithSolution(Tree tree, int[] mapping, List<Point> points) {
         solver.reset();
 

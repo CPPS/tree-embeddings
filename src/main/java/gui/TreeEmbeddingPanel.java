@@ -1,7 +1,6 @@
 package gui;
 
 import com.google.common.collect.Lists;
-
 import geometry.Edge;
 import geometry.LBend;
 import geometry.MappingValidator2SAT;
@@ -12,16 +11,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nullable;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,7 +50,7 @@ public class TreeEmbeddingPanel extends JPanel {
         this.points = points;
 
         if (tree == null ^ mapping == null) {
-            throw new IllegalArgumentException("tree and mapping must either be both non-null or both null");
+            throw new IllegalArgumentException("tree and mapping must either be both non-null or both null. " + (tree == null ? "tree is null" : "mapping is null"));
         }
 
         this.tree = tree;

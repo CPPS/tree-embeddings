@@ -5,11 +5,10 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Created by s148327 on 5-3-2017.
- */
 public class Solver2SATTest {
 
     Solver2SAT solver;

@@ -15,7 +15,7 @@ public class Main {
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 5;
+        int n = 7;
         File dir = new File("trees");
 
         Iterator<Tree> treeGen = new TreeReader(dir, n);
@@ -23,7 +23,7 @@ public class Main {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
-        // Dumper dumper = new Dumper();
+        // Dumpert dumper = new Dumpert();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
@@ -49,8 +49,9 @@ public class Main {
 
         long ms = stopwatch.elapsed(TimeUnit.MILLISECONDS);
         System.out.println("Took: " + ms + "ms");
-        // Initial time for 7 . . . . -> 83,264 ms
-        // After removing lambda in dfs: 61.608ms
+        // Initial time for 7 . . . . -> 83,264ms
+        // After removing lambda in dfs: 61,608ms
+        // After inserting mapping backtracker: 2,727ms
 
         executor.shutdown();
     }

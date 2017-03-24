@@ -1,10 +1,15 @@
 package geometry;
 
-import java.util.*;
+import com.koloboke.collect.IntCursor;
 
 import javax.annotation.Nullable;
-
-import com.koloboke.collect.IntCursor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -31,12 +36,14 @@ public class Tree implements Iterable<Node> {
         return result;
     }
 
-    public void connect(int a, int b) {
+    public Tree connect(int a, int b) {
         checkRange(a);
         checkRange(b);
 
         nodes.get(a).addNeighbour(b);
         nodes.get(b).addNeighbour(a);
+
+        return this;
     }
 
     public void disconnect(int a, int b) {
@@ -143,5 +150,10 @@ public class Tree implements Iterable<Node> {
             }
 
         };
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(nodes.toArray());
     }
 }

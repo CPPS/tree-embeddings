@@ -1,16 +1,6 @@
 package gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.WindowConstants;
-
 import com.google.common.collect.Lists;
-
 import generator.IntQuickPerm;
 import generator.point.PermutedPointGenerator;
 import generator.point.PointSetGenerator;
@@ -18,6 +8,14 @@ import geometry.MappingValidator2SAT;
 import geometry.Point;
 import geometry.Tree;
 import lombok.NonNull;
+
+import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class DebugMain {
     private static final class MouseHandler extends MouseAdapter {

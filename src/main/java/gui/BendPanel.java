@@ -1,13 +1,11 @@
 package gui;
 
 import geometry.LBend;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Created by s148327 on 5-3-2017.
- */
 public class BendPanel extends JPanel {
     private final BendDrawer drawer = new BendDrawer();
 

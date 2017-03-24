@@ -1,16 +1,11 @@
 package math;
 
+import com.koloboke.collect.IntCursor;
 import geometry.Node;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
-import com.koloboke.collect.IntCursor;
-
-import java.util.*;
-
-/**
- * Created by s148327 on 5-3-2017.
- */
 public class Solver2SAT {
 
     /**
