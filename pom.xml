@@ -21,9 +21,6 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory> <!--TODO: Fix -->
-		<testSourceDirectory>test</testSourceDirectory>
-
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
