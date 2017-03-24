@@ -36,9 +36,7 @@ public class Main {
                 (tree, points, mapping, solution) -> {
                     int i = cnt.getAndIncrement();
                     if (mapping == null) {
-                        throw new RuntimeException("" +
-                                tree + " " + points + " "
-                                + Arrays.toString(mapping));
+                        throw new RuntimeException(tree + " " + points);
                     }
 
                     System.out.println("" +
