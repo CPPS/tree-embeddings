@@ -2,15 +2,16 @@ package generators;
 
 import static org.junit.Assert.*;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import generator.point.PermutedPointGenerator;
+import geometry.FixedPoint;
 import geometry.Point;
 
 public class PermutedPointGeneratorTest {
@@ -25,12 +26,16 @@ public class PermutedPointGeneratorTest {
             n *= i;
         }
 
-        Set<Set<Point>> seen = new HashSet<>();
+        Set<Set<FixedPoint>> seen = new HashSet<>();
         Iterator<List<Point>> it = new PermutedPointGenerator(4).generate();
         while (it.hasNext()) {
-            Collection<Point> set = it.next();
+            // Make copy
+            Set<FixedPoint> set = it.next().stream()
+                    .map(FixedPoint::of)
+                    .collect(Collectors.toSet());
+
             n--;
-            assertTrue(seen.add(new HashSet<>(set)));
+            assertTrue(seen.add(set));
         }
 
         assertEquals(0, n);
