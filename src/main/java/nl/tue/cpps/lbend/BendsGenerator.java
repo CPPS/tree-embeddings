@@ -1,6 +1,5 @@
 package nl.tue.cpps.lbend;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -28,7 +27,7 @@ public class BendsGenerator {
     @ThreadSafe
     interface Callback {
         void on(
-                Tree tree, Collection<Point> points,
+                Tree tree, List<Point> points,
                 @Nullable int[] mapping, @Nullable boolean[] solution);
     }
 

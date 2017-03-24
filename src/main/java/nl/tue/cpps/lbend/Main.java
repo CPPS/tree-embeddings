@@ -1,4 +1,5 @@
 package nl.tue.cpps.lbend;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ public class Main {
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 7;
+        int n = 5;
         File dir = new File("trees");
 
         Iterator<Tree> treeGen = new TreeReader(dir, n);
@@ -24,7 +25,7 @@ public class Main {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
-        // Dumpert dumper = new Dumpert();
+        Dumper dumper = new DummyDumper();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
@@ -44,8 +45,7 @@ public class Main {
                             i + " " + points + " " +
                             Arrays.toString(mapping));
 
-                    // dumper.draw(i, tree, new ArrayList<>(points), mapping,
-                    // solution);
+                    dumper.draw(i, tree, points, mapping, solution);
                 }).run(nCores);
 
         long ms = stopwatch.elapsed(TimeUnit.MILLISECONDS);
