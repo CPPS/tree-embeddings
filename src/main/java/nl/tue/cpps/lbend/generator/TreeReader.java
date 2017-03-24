@@ -7,15 +7,13 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import lombok.SneakyThrows;
 import nl.tue.cpps.lbend.geometry.Tree;
 
 public class TreeReader implements Iterator<Tree> {
     private final int nbNodes;
     private final Scanner scanner;
 
-    @SneakyThrows(IOException.class)
-    public TreeReader(File pathToFolder, int nbNodes) {
+    public TreeReader(File pathToFolder, int nbNodes) throws IOException {
         this.nbNodes = nbNodes;
         File file = new File(pathToFolder, nbNodes + ".txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
