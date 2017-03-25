@@ -1,12 +1,10 @@
 package nl.tue.cpps.lbend.geometry;
 
+import javax.annotation.Nonnull;
+
 import lombok.Data;
 
 @Data
 public class Line {
-    private final Point from, to;
-
-    public Line reverse() {
-        return new Line(to, from);
-    }
+    private final @Nonnull Point from, to;
 }
