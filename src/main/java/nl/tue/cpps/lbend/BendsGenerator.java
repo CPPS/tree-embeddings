@@ -1,5 +1,4 @@
 package nl.tue.cpps.lbend;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -47,10 +46,8 @@ public class BendsGenerator {
 
         CountDownLatch doneSignal = new CountDownLatch(nThreads);
 
-        List<Runner> runners = new ArrayList<>(nThreads);
         for (int i = 0; i < nThreads; i++) {
             Runner runner = new Runner(Q, doneSignal, n, cb);
-            runners.add(runner);
             executor.execute(runner);
         }
 
