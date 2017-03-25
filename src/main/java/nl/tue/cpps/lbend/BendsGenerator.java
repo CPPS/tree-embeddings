@@ -1,4 +1,5 @@
 package nl.tue.cpps.lbend;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -52,15 +53,15 @@ public class BendsGenerator {
             executor.execute(runner);
         }
 
-        while (trees.hasNext()) {
-            Q.add(trees.next());
-        }
-
-        for (int i = 0; i < nThreads; i++) {
-            Q.add(DONE);
-        }
-
         try {
+            while (trees.hasNext()) {
+                Q.put(trees.next());
+            }
+
+            for (int i = 0; i < nThreads; i++) {
+                Q.put(DONE);
+            }
+
             doneSignal.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -122,7 +123,8 @@ public class BendsGenerator {
         }
 
         private boolean[] run(Tree tree, List<Point> points) {
-            // TODO: refactor such that it becomes For each pointset -> For each tree
+            // TODO: refactor such that it becomes For each pointset -> For each
+            // tree
             // instead of For each tree -> For each pointset
             // to make use of mapping finders optimizations per point set
             MappingFinder finder = new QuickMappingFinder(points);
@@ -130,8 +132,10 @@ public class BendsGenerator {
                 // found valid mapping
 
                 // get placement of bends
-                // TODO: we do not want to do this for each tree, pointset and mapping,
-                // as finding A mapping is enough, and ensures a valid placement of bends is possible
+                // TODO: we do not want to do this for each tree, pointset and
+                // mapping,
+                // as finding A mapping is enough, and ensures a valid placement
+                // of bends is possible
                 return run(tree, points, mapping);
             }
 
