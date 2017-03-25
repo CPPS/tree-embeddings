@@ -1,6 +1,9 @@
 package nl.tue.cpps.lbend.geometry;
 
+import com.google.common.collect.Lists;
 import com.koloboke.collect.IntCursor;
+
+import lombok.EqualsAndHashCode;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.NoSuchElementException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+@EqualsAndHashCode
 public class Tree implements Iterable<Node> {
     protected List<Node> nodes;
 
@@ -150,6 +154,10 @@ public class Tree implements Iterable<Node> {
             }
 
         };
+    }
+
+    public List<Edge> edges() {
+        return Lists.newArrayList(edgeIterator());
     }
 
     @Override

@@ -3,8 +3,11 @@ package nl.tue.cpps.lbend.geometry;
 import com.koloboke.collect.set.IntSet;
 import com.koloboke.collect.set.hash.HashIntSets;
 
-import java.util.Arrays;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class Node {
     private final IntSet neighbours = HashIntSets.newMutableSet();
 
@@ -34,10 +37,5 @@ public class Node {
 
     public int getDegree() {
         return neighbours.size();
-    }
-
-    @Override
-    public String toString() {
-        return "{neighbours: " + Arrays.toString(neighbours.toIntArray()) + "}";
     }
 }
