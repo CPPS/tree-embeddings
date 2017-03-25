@@ -1,63 +1,32 @@
-package mappings;
-
-import geometry.LBend;
-import geometry.Node;
-import geometry.Point;
-import geometry.Tree;
+package nl.tue.cpps.lbend.mappings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
+import nl.tue.cpps.lbend.geometry.LBend;
+import nl.tue.cpps.lbend.geometry.Node;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
 
-    /**
-     * Not thread safe!
-     */
-
-    private List<Point> points;
+/**
+ * Not thread safe!
+ */
+public class MappingBacktrackerCorrect extends MappingFinder {
     private Tree tree;
     private int n;
 
-    private int[][] closestPoints;
-    private int[] rootOrder;
-
-    public MappingBacktrackerCorrectDistOpt() {super();}
-    public MappingBacktrackerCorrectDistOpt(List<Point> points) {super(points);}
+    public MappingBacktrackerCorrect() {super();}
+    public MappingBacktrackerCorrect(List<Point> points) {super(points);}
 
     @Override
     public MappingFinder setPointSet(List<Point> points) {
-        this.points = points;
         this.n = points.size();
 
         allBends = LBend.createAllBends(points);
-
-        closestPoints = new int[n][n - 1];
-        for (int i = 0; i < n; i++) {
-            Integer[] neighbours = new Integer[n - 1];
-            int idx = 0;
-            for (int j = 0; j < n; j++) {
-                if (i == j) continue;
-                neighbours[idx++] = j;
-            }
-
-            distanceComparator.setParentLocation(i);
-            Arrays.sort(neighbours, distanceComparator);
-            for (int j = 0; j < n - 1; j++) {
-                closestPoints[i][j] = neighbours[j];
-            }
-        }
-
-        rootOrder = new int[n];
-        int half1 = 2;
-
-        for (int i = 0; i < n; i++) {
-            rootOrder[i] = (half1 + i) % n;
-        }
         return this;
     }
 
@@ -66,7 +35,7 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
         this.tree = tree;
 
         boolean[] availableLocations = new boolean[n];
-        for (int i : rootOrder) {
+        for (int i = 0; i < n; i++) {
             Arrays.fill(availableLocations, true);
             Arrays.fill(mapping, -1);
             availableLocations[i] = false;
@@ -146,18 +115,17 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
 
         TreeNode treeNode = Q.poll();
 
-//        if (availableLocations[treeNode.parentLocation])
-//            throw new AssertionError("parent: " + treeNode.parent + ", available: " + Arrays.toString(availableLocations) +
-//                                    ", mapping: " + Arrays.toString(mapping));
-//        if (mapping[treeNode.parent] != treeNode.parentLocation)
-//            throw new AssertionError("mapping: " + mapping[treeNode.parent] + ", treeNode: " + treeNode.parentLocation);
+        if (availableLocations[treeNode.parentLocation])
+            throw new AssertionError("parent: " + treeNode.parent + ", available: " + Arrays.toString(availableLocations) +
+                                    ", mapping: " + Arrays.toString(mapping));
+        if (mapping[treeNode.parent] != treeNode.parentLocation)
+            throw new AssertionError("mapping: " + mapping[treeNode.parent] + ", treeNode: " + treeNode.parentLocation);
 
-        int[] neighboursSortedByDist = closestPoints[treeNode.parentLocation];
-        for (int location : neighboursSortedByDist) {
+        for (int location = 0; location < availableLocations.length; location++) {
             if (!availableLocations[location]) continue; // not available
 
             availableLocations[location] = false;
-//            if (mapping[treeNode.node] != -1) throw new AssertionError();
+            if (mapping[treeNode.node] != -1) throw new AssertionError();
             mapping[treeNode.node] = location;
             for (LBend bend : getLBends(treeNode.parentLocation, location)) {
                 if (intersects(bends, bend)) continue;
@@ -176,7 +144,7 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
 
                 // not possible
                 // continue with next bend/location
-                bends.remove(bends.size() - 1);
+                bends.remove(bend);
             }
             availableLocations[location] = true;
             mapping[treeNode.node] = -1;
@@ -221,6 +189,7 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
             }
         }
 
+        @SuppressWarnings("unused")
         void removeChildrenFromQueue(Queue<TreeNode> Q, int nodeLocation) {
             for (Iterator<TreeNode> iter = Q.iterator(); iter.hasNext(); ) {
                 TreeNode tn = iter.next();
@@ -231,8 +200,7 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
         }
     }
 
-    public static boolean intersects(List<LBend> bends, LBend bend) {
-//        if (true) return Math.random() < 0.99;
+    private boolean intersects(List<LBend> bends, LBend bend) {
         for (LBend bend1 : bends) {
             if (bend1.intersectsWith(bend)) return true;
         }
@@ -242,30 +210,6 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
     private LBend[][][] allBends;
     private LBend[] getLBends(int from, int to) {
         return allBends[from][to];
-    }
-
-    private final DistanceComparator distanceComparator = new DistanceComparator();
-    private class DistanceComparator implements Comparator<Integer> {
-
-        int parentLocation;
-        Point parentPoint;
-
-        public void setParentLocation(int location) {
-            this.parentLocation = location;
-            this.parentPoint = points.get(location);
-        }
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return Long.compare(distToParentSqrd(o1), distToParentSqrd(o2));
-        }
-
-        long distToParentSqrd(int from) {
-            long dx = points.get(from).getX() - parentPoint.getX();
-            long dy = points.get(from).getY() - parentPoint.getY();
-
-            return dx * dx + dy * dy;
-        }
     }
 
 }

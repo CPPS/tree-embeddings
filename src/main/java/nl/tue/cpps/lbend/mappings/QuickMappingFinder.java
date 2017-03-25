@@ -1,16 +1,15 @@
-package mappings;
-
-import geometry.MappingValidator2SAT;
-import geometry.Point;
-import geometry.Tree;
+package nl.tue.cpps.lbend.mappings;
 
 import java.util.List;
 import java.util.Random;
 
+import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
+
 public class QuickMappingFinder extends MappingFinder {
 
     private List<Point> points;
-    private int n;
 
     public QuickMappingFinder() {super();}
     public QuickMappingFinder(List<Point> points) {super(points);}
@@ -18,7 +17,6 @@ public class QuickMappingFinder extends MappingFinder {
     @Override
     public MappingFinder setPointSet(List<Point> points) {
         this.points = points;
-        this.n = points.size();
 
         return this;
     }

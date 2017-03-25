@@ -1,27 +1,18 @@
-package mappings;
-
-import generator.IntQuickPerm;
-import generator.point.PermutedPointGenerator;
-import geometry.MappingValidator2SAT;
-import geometry.Point;
-import geometry.Tree;
-import org.junit.Before;
-import org.junit.Test;
+package nl.tue.cpps.lbend.mappings;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by s148327 on 18-3-2017.
- */
+import org.junit.Test;
+
+import nl.tue.cpps.lbend.generator.IntQuickPerm;
+import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
+import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
+
 public class MappingBacktrackerTest {
-
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
     public static List<Tree> getListOfTestTrees() {
         return Arrays.asList(
                 new Tree(7).connect(0, 1).connect(0, 2).connect(1, 3).connect(1, 4).connect(2, 5).connect(2, 6),
@@ -45,10 +36,7 @@ public class MappingBacktrackerTest {
             for (Iterator<List<Point>> iter = pointGenerator.generate(); iter.hasNext(); pointSetIdx++) {
                 List<Point> points = iter.next();
 
-                MappingBacktrackerFastIncorrect mappingBacktracker = new MappingBacktrackerFastIncorrect(points);
-
                 if (pointSetIdx % 1000 == 0) System.out.println("n=" + n + " #" + pointSetIdx /*+ " " + points*/);
-                long time;
 
                 int[] mapping = new QuickMappingFinder(points).findMapping(tree);
                 if (mapping == null) {
@@ -98,6 +86,7 @@ public class MappingBacktrackerTest {
 
     }
 
+    @SuppressWarnings("unused")
     private int[] getMapping2SAT(List<Point> points, Tree tree) {
         int n = points.size();
         int[] array = new int[n];
@@ -116,6 +105,7 @@ public class MappingBacktrackerTest {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private static void validateMapping(Tree tree, List<Point> points, int[] mapping) {
         int n = mapping.length;
         MappingValidator2SAT validator = new MappingValidator2SAT(n);

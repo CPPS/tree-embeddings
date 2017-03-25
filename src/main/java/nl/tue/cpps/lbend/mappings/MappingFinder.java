@@ -1,10 +1,11 @@
-package mappings;
+package nl.tue.cpps.lbend.mappings;
 
-import geometry.Point;
-import geometry.Tree;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
 
 public abstract class MappingFinder {
 

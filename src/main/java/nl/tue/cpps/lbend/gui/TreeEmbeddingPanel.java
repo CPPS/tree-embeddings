@@ -1,15 +1,15 @@
-package gui;
+package nl.tue.cpps.lbend.gui;
 
 import com.google.common.collect.Lists;
 
-import geometry.Edge;
-import geometry.LBend;
-import geometry.MappingValidator2SAT;
-import geometry.Point;
-import geometry.Tree;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import nl.tue.cpps.lbend.geometry.Edge;
+import nl.tue.cpps.lbend.geometry.LBend;
+import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
 
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
@@ -59,7 +59,8 @@ public class TreeEmbeddingPanel extends JPanel {
         this.points = points;
 
         if (tree == null ^ mapping == null) {
-            throw new IllegalArgumentException("tree and mapping must either be both non-null or both null. " + (tree == null ? "tree is null" : "mapping is null"));
+            throw new IllegalArgumentException("tree and mapping must either be both non-null or both null. "
+                    + (tree == null ? "tree is null" : "mapping is null"));
         }
 
         this.tree = tree;

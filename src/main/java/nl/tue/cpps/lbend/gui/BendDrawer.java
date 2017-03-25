@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import geometry.LBend;
-import geometry.Point;
 import lombok.Setter;
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.Point;

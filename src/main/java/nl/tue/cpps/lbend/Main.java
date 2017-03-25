@@ -17,7 +17,7 @@ public class Main {
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 5;
+        int n = 13;
         File dir = new File("trees");
 
         Iterator<Tree> treeGen = new TreeReader(dir, n);

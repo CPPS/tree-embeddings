@@ -1,13 +1,13 @@
-package mappings;
-
-import geometry.LBend;
-import geometry.MappingValidator2SAT;
-import geometry.Point;
-import geometry.Tree;
+package nl.tue.cpps.lbend.mappings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import nl.tue.cpps.lbend.geometry.LBend;
+import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
 
 public class MappingBacktrackerFastIncorrect extends MappingFinder {
 

@@ -1,16 +1,16 @@
 package mappings;
 
-import generator.point.PermutedPointGenerator;
-import geometry.Point;
-import geometry.Tree;
+import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.mappings.MappingBacktrackerCorrect;
+import nl.tue.cpps.lbend.mappings.MappingBacktrackerCorrectDistOpt;
+
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by s148327 on 19-3-2017.
- */
 public class MappingBacktrackerCorrectDistOptTest {
 
     @Test

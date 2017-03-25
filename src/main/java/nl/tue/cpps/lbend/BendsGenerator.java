@@ -9,11 +9,12 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
-import nl.tue.cpps.lbend.generator.IntQuickPerm;
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.mappings.MappingFinder;
+import nl.tue.cpps.lbend.mappings.QuickMappingFinder;
 
 public class BendsGenerator {
     private static final Tree DONE = new Tree(1);
@@ -69,6 +70,7 @@ public class BendsGenerator {
     private static final class Runner implements Runnable {
         private final BlockingQueue<Tree> Q;
         private final CountDownLatch doneSignal;
+        @SuppressWarnings("unused")
         private final int n;
         private final int[] mapping;
         private final MappingValidator2SAT validator;
