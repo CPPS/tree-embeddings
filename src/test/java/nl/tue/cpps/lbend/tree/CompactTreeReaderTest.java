@@ -2,7 +2,6 @@ package nl.tue.cpps.lbend.tree;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
