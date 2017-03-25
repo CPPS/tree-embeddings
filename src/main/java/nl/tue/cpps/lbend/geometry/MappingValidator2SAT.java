@@ -49,6 +49,7 @@ public class MappingValidator2SAT {
          *                  ( edge_i.L0 OR edge_j.L1     ) -> 2-SAT shape!
          */
 
+        // TODO: Do this once per tree
         List<Edge> edges = Lists.newArrayList(tree.edgeIterator());
 
         Edge[] edgePair = new Edge[2];

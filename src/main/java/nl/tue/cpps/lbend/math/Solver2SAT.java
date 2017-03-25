@@ -8,16 +8,13 @@ import nl.tue.cpps.lbend.geometry.Node;
 
 import java.util.*;
 
+/**
+ * Implemented using:
+ * https://kartikkukreja.wordpress.com/2013/05/16/solving-2-sat-in-linear- time/
+ *
+ * Also called Implication Graph
+ */
 public class Solver2SAT {
-
-    /**
-     * Implemented using:
-     * https://kartikkukreja.wordpress.com/2013/05/16/solving-2-sat-in-linear-
-     * time/
-     *
-     * Also called Implication Graph
-     */
-
     // Implication graph
     private final int n, size;
     private Node[] graph, graphReverse;
