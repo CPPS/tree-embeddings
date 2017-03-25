@@ -7,21 +7,20 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import nl.tue.cpps.lbend.generator.TreeReader;
-
 public class CompactTreeReaderTest {
     @Test
     public void test() throws IOException {
         int maxTest = 6; // max: 20
         for (int i = 4; i <= maxTest; i++) {
-            File out = new File(TreeCompactor.OUT_DIR, i + ".tree");
-            TreeReader reader = new TreeReader(TreeCompactor.IN_DIR, i);
-
-            CompactTreeReader.forFile(out, w -> {
-                while (reader.hasNext()) {
-                    assertEquals(w.next(), reader.next());
-                }
-            });
+            int n = i;
+            try (PlainTreeReader reader = new PlainTreeReader(
+                    TreeCompactor.IN_DIR, n)) {
+                CompactTreeReader.forN(n, w -> {
+                    while (reader.hasNext()) {
+                        assertEquals(w.next(), reader.next());
+                    }
+                });
+            }
         }
     }
 }

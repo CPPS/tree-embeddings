@@ -2,7 +2,6 @@ package nl.tue.cpps.lbend;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -10,18 +9,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 
-import nl.tue.cpps.lbend.generator.TreeReader;
-import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.tree.CompactTreeReader;
+import nl.tue.cpps.lbend.tree.PlainTreeReader;
+import nl.tue.cpps.lbend.tree.TreeProvider;
 
 public class Main {
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 13;
-        File dir = new File("trees");
+        int n = 7;
 
-        Iterator<Tree> treeGen = new TreeReader(dir, n);
+        if (false) {
+            run(n, new PlainTreeReader(new File("trees"), n));
+        } else {
+            CompactTreeReader.forN(n, trees -> {
+                run(n, trees);
+            });
+        }
+    }
 
+    private static void run(int n, TreeProvider treeGen) {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 

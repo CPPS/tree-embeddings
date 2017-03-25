@@ -3,8 +3,6 @@ package nl.tue.cpps.lbend.tree;
 import java.io.File;
 import java.io.IOException;
 
-import nl.tue.cpps.lbend.generator.TreeReader;
-
 public class TreeCompactor {
     static final File IN_DIR = new File("trees");
     static final File OUT_DIR = new File("compact-trees");
@@ -24,9 +22,10 @@ public class TreeCompactor {
 
         File out = new File(OUT_DIR, i + ".tree");
         CompactTreeWriter.forFile(out, w -> {
-            TreeReader reader = new TreeReader(IN_DIR, i);
-            while (reader.hasNext()) {
-                w.writeTree(reader.next());
+            try (PlainTreeReader reader = new PlainTreeReader(IN_DIR, i)) {
+                while (reader.hasNext()) {
+                    w.writeTree(reader.next());
+                }
             }
         });
     }

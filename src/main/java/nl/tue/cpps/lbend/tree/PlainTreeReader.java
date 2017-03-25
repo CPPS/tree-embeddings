@@ -1,19 +1,18 @@
-package nl.tue.cpps.lbend.generator;
+package nl.tue.cpps.lbend.tree;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Scanner;
 
 import nl.tue.cpps.lbend.geometry.Tree;
 
-public class TreeReader implements Iterator<Tree> {
+public class PlainTreeReader implements TreeProvider {
     private final int nbNodes;
     private final Scanner scanner;
 
-    public TreeReader(File pathToFolder, int nbNodes) throws IOException {
+    public PlainTreeReader(File pathToFolder, int nbNodes) throws IOException {
         this.nbNodes = nbNodes;
         File file = new File(pathToFolder, nbNodes + ".txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -42,5 +41,10 @@ public class TreeReader implements Iterator<Tree> {
         }
 
         return tree;
+    }
+
+    @Override
+    public void close() throws IOException {
+        scanner.close();
     }
 }
