@@ -7,17 +7,7 @@ import javax.annotation.Nullable;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
-public abstract class MappingFinder {
-
-    public MappingFinder() {
-
-    }
-
-    public MappingFinder(List<Point> points) {
-        this();
-        setPointSet(points);
-    }
-
+public interface MappingFinder {
     /**
      * Set the point set to find the mapping on.
      * Allows for preprocessing and optimizations
@@ -26,7 +16,7 @@ public abstract class MappingFinder {
      * @param points the point set
      * @return this
      */
-    public abstract MappingFinder setPointSet(List<Point> points);
+    MappingFinder setPointSet(List<Point> points);
 
     /**
      * Finds a possible mapping of the tree onto the point set.
@@ -36,7 +26,7 @@ public abstract class MappingFinder {
      * @return possible mapping, or null when not possible
      */
     @Nullable
-    public int[] findMapping(Tree tree) {
+    default int[] findMapping(Tree tree) {
         int[] mapping = new int[tree.size()];
         if (findMapping(tree, mapping)) {
             return mapping;
@@ -53,5 +43,5 @@ public abstract class MappingFinder {
      * @param mapping the array to store the mapping in
      * @return true iff valid mapping is found
      */
-    public abstract boolean findMapping(Tree tree, int[] mapping);
+    boolean findMapping(Tree tree, int[] mapping);
 }

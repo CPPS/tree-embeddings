@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
-import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 import nl.tue.cpps.lbend.mappings.MappingFinder;
@@ -60,13 +59,14 @@ public class BendsGenerator {
     }
 
     private static final class Runner implements Runnable {
+        private final MappingFinder finder = new QuickMappingFinder();
+
         private final Iterator<List<Point>> points;
         private final Iterable<Tree> trees;
         private final CountDownLatch doneSignal;
         @SuppressWarnings("unused")
         private final int n;
         private final int[] mapping;
-        private final MappingValidator2SAT validator;
         private final Callback cb;
 
         public Runner(
@@ -80,7 +80,6 @@ public class BendsGenerator {
             this.doneSignal = doneSignal;
             this.n = n;
             this.mapping = new int[n];
-            this.validator = new MappingValidator2SAT(n);
             this.cb = cb;
         }
 
@@ -94,7 +93,7 @@ public class BendsGenerator {
         }
 
         private void run(List<Point> point) {
-            MappingFinder finder = new QuickMappingFinder(point);
+            finder.setPointSet(point);
 
             Iterator<Tree> it = trees.iterator();
             while (it.hasNext()) {

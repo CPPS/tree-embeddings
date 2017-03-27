@@ -13,21 +13,16 @@ import nl.tue.cpps.lbend.geometry.Node;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
-public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
-
-    /**
-     * Not thread safe!
-     */
-
+/**
+ * Not thread safe!
+ */
+public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
     private List<Point> points;
     private Tree tree;
     private int n;
 
     private int[][] closestPoints;
     private int[] rootOrder;
-
-    public MappingBacktrackerCorrectDistOpt() {super();}
-    public MappingBacktrackerCorrectDistOpt(List<Point> points) {super(points);}
 
     @Override
     public MappingFinder setPointSet(List<Point> points) {
@@ -265,5 +260,4 @@ public class MappingBacktrackerCorrectDistOpt extends MappingFinder {
             return dx * dx + dy * dy;
         }
     }
-
 }

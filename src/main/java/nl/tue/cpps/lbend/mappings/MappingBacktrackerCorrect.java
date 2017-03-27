@@ -15,12 +15,9 @@ import nl.tue.cpps.lbend.geometry.Tree;
 /**
  * Not thread safe!
  */
-public class MappingBacktrackerCorrect extends MappingFinder {
+public class MappingBacktrackerCorrect implements MappingFinder {
     private Tree tree;
     private int n;
-
-    public MappingBacktrackerCorrect() {super();}
-    public MappingBacktrackerCorrect(List<Point> points) {super(points);}
 
     @Override
     public MappingFinder setPointSet(List<Point> points) {

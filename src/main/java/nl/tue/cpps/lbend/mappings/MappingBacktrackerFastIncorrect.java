@@ -9,7 +9,7 @@ import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
-public class MappingBacktrackerFastIncorrect extends MappingFinder {
+public class MappingBacktrackerFastIncorrect implements MappingFinder {
 
     private List<Point> points;
     private Tree tree;
@@ -18,9 +18,6 @@ public class MappingBacktrackerFastIncorrect extends MappingFinder {
     // mapping validation
     private MappingValidator2SAT validator;
     boolean[] contained;
-
-    public MappingBacktrackerFastIncorrect() {super();}
-    public MappingBacktrackerFastIncorrect(List<Point> points) {super(points);}
 
     @Override
     public MappingFinder setPointSet(List<Point> points) {
