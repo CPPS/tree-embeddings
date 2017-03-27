@@ -9,10 +9,45 @@ import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
+/**
+ * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try all
+ * positions for p2, each position both l-bends exists possible placement ->
+ * return true no possible placement -> try second bend of p1. Goto begin no? ->
+ * try second bend of p1. Goto begin.
+ *
+ * List<Integer> children List<LBend> bends for each location of each child
+ *
+ * input: list of children index of current child global mapping list of
+ * available point (indices) list of placed lbends
+ *
+ * TODO: add further backtracking, not only to children
+ *
+ * child i root on point pr for (Point point : availablePoints) { for (LBend
+ * bend : bends) { if (bend does not intersect) {
+ *
+ * if (child i is leaf) { if (i is last child) return true;
+ *
+ * if (backtrack i + 1) return true; }
+ *
+ * if (backtrack such that a subtree from child i is possible) {
+ *
+ * // check if last child, or further backtracking should follow if (i is last
+ * child || backtrack i + 1) { return true; }
+ *
+ * } } } } return false;
+ *
+ *
+ * initial call: int[] mapping = new int[n]; for (point p : points) { mapping[i]
+ * = p; if (backtrack(root=0, rootlocation=p, children=nodes[0].children,
+ * childIdx=0, availablePoints=points-p, bends=[], mapping)) { return mapping; }
+ * } return null;
+ */
 public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder {
     private final int n;
     private final MappingValidator2SAT validator;
     private final boolean[] contained;
+    private final boolean[] availablePoints;
+    private final List<LBend> bends = new ArrayList<>();
 
     private List<Point> points;
     private Tree tree;
@@ -23,6 +58,7 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
         this.n = n;
         this.validator = new MappingValidator2SAT(n);
         this.contained = new boolean[n];
+        this.availablePoints = new boolean[n];
     }
 
     @Override
@@ -38,19 +74,20 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
     @Override
     public boolean findMapping(Tree tree, int[] mapping) {
         this.tree = tree;
-        boolean[] availablePoints = new boolean[n];
+
         for (int i = 0; i < n; i++) {
             Arrays.fill(availablePoints, true);
             Arrays.fill(mapping, -1);
 
             availablePoints[i] = false;
             mapping[0] = i;
+            bends.clear();
 
             BacktrackResult result = backtrackMapping(
                     0, i,
                     new ArrayList<>(tree.getNode(0).getNeighbours()), 0,
                     availablePoints,
-                    new ArrayList<>(),
+                    bends,
                     mapping);
 
             if (result.result && validateMapping(tree, points, mapping)) {
@@ -63,40 +100,9 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
         return false;
     }
 
-    /**
-     * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try
-     * all positions for p2, each position both l-bends exists possible
-     * placement -> return true no possible placement -> try second bend of p1.
-     * Goto begin no? -> try second bend of p1. Goto begin.
-     *
-     * List<Integer> children List<LBend> bends for each location of each child
-     *
-     * input: list of children index of current child global mapping list of
-     * available point (indices) list of placed lbends
-     *
-     * TODO: add further backtracking, not only to children
-     *
-     * child i root on point pr for (Point point : availablePoints) { for (LBend
-     * bend : bends) { if (bend does not intersect) {
-     *
-     * if (child i is leaf) { if (i is last child) return true;
-     *
-     * if (backtrack i + 1) return true; }
-     *
-     * if (backtrack such that a subtree from child i is possible) {
-     *
-     * // check if last child, or further backtracking should follow if (i is
-     * last child || backtrack i + 1) { return true; }
-     *
-     * } } } } return false;
-     *
-     *
-     * initial call: int[] mapping = new int[n]; for (point p : points) {
-     * mapping[i] = p; if (backtrack(root=0, rootlocation=p,
-     * children=nodes[0].children, childIdx=0, availablePoints=points-p,
-     * bends=[], mapping)) { return mapping; } } return null;
-     */
-    private BacktrackResult backtrackMapping(int root, int rootLocation, List<Integer> children, int childIdx,
+    private BacktrackResult backtrackMapping(
+            int root, int rootLocation,
+            List<Integer> children, int childIdx,
             boolean[] availablePoints, List<LBend> bends, int[] mapping) {
         int child = children.get(childIdx);
         BacktrackResult thisResult = new BacktrackResult(child);
@@ -157,13 +163,15 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
                         }
                     }
 
-                    bends.remove(bend);
+                    bends.remove(bends.size() - 1);
                     thisResult.bendsToRemove.remove(bend);
                 }
             }
+
             mapping[child] = -1;
             availablePoints[point] = true;
         }
+
         return thisResult.setResult(false);
     }
 
