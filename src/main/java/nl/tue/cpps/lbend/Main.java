@@ -1,7 +1,9 @@
 package nl.tue.cpps.lbend;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +15,12 @@ import nl.tue.cpps.lbend.geometry.Tree;
 import nl.tue.cpps.lbend.tree.TreeIterable;
 
 public class Main {
+    private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance();
+
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 9;
+        int n = 7;
 
         run(n, new TreeIterable(new File("compact-trees/" + n + ".tree")));
     }
@@ -39,7 +43,7 @@ public class Main {
                         throw new RuntimeException(tree + " " + points);
                     }
                     if (i % 10000 == 0) {
-                        System.out.println(i);
+                        System.out.println(NR_FORMAT.format(i));
                     }
 
                     // Printing is too slow :(
@@ -52,10 +56,13 @@ public class Main {
                 }).run(nCores);
 
         long ms = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-        System.out.println("Took: " + ms + "ms");
+        System.out.println(
+                "Took: " + NR_FORMAT.format(ms) + "ms (" +
+                        NR_FORMAT.format(cnt.get()) + ")");
         // Initial time for 7 . . . . -> 83,264ms
         // After removing lambda in dfs: 61,608ms
         // After inserting mapping backtracker: 2,727ms
+        // After per-pointset backtracking + print removal: 1.531
 
         executor.shutdown();
     }
