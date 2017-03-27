@@ -1,5 +1,7 @@
 package nl.tue.cpps.lbend;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -11,6 +13,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
+import nl.tue.cpps.lbend.geometry.FixedPoint;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
@@ -18,11 +21,12 @@ import nl.tue.cpps.lbend.mappings.MappingFinder;
 import nl.tue.cpps.lbend.mappings.QuickMappingFinder;
 
 public class BendsGenerator {
-    private static final Tree DONE = new Tree(1);
+    private static final List<Point> DONE = Collections.unmodifiableList(
+            new ArrayList<>());
 
     private final Executor executor;
     private final int n;
-    private final Iterator<Tree> trees;
+    private final Iterable<Tree> trees;
     private final Callback cb;
 
     @ThreadSafe
@@ -34,7 +38,7 @@ public class BendsGenerator {
 
     BendsGenerator(
             Executor executor,
-            Iterator<Tree> trees,
+            Iterable<Tree> trees,
             int n,
             Callback cb) {
         this.executor = executor;
@@ -44,18 +48,20 @@ public class BendsGenerator {
     }
 
     public void run(int nThreads) {
-        BlockingQueue<Tree> Q = new ArrayBlockingQueue<>(4 * nThreads);
+        BlockingQueue<List<Point>> Q = new ArrayBlockingQueue<>(4 * nThreads);
 
         CountDownLatch doneSignal = new CountDownLatch(nThreads);
 
         for (int i = 0; i < nThreads; i++) {
-            Runner runner = new Runner(Q, doneSignal, n, cb);
+            Runner runner = new Runner(trees, Q, doneSignal, n, cb);
             executor.execute(runner);
         }
 
+        Iterator<List<Point>> pointGen = new PermutedPointGenerator(n).generate();
+
         try {
-            while (trees.hasNext()) {
-                Q.put(trees.next());
+            while (pointGen.hasNext()) {
+                Q.put(copyPoints(pointGen.next()));
             }
 
             for (int i = 0; i < nThreads; i++) {
@@ -68,34 +74,45 @@ public class BendsGenerator {
         }
     }
 
+    private List<Point> copyPoints(List<Point> next) {
+        List<Point> out = new ArrayList<>(next.size());
+
+        for (Point n : next) {
+            out.add(FixedPoint.of(n));
+        }
+
+        return out;
+    }
+
     private static final class Runner implements Runnable {
-        private final BlockingQueue<Tree> Q;
+        private final Iterable<Tree> trees;
+        private final BlockingQueue<List<Point>> Q;
         private final CountDownLatch doneSignal;
         @SuppressWarnings("unused")
         private final int n;
         private final int[] mapping;
         private final MappingValidator2SAT validator;
         private final Callback cb;
-        private final PermutedPointGenerator pointGen;
 
         public Runner(
-                BlockingQueue<Tree> Q,
+                Iterable<Tree> trees,
+                BlockingQueue<List<Point>> Q,
                 CountDownLatch doneSignal,
                 int n,
                 Callback cb) {
+            this.trees = trees;
             this.Q = Q;
             this.doneSignal = doneSignal;
             this.n = n;
             this.mapping = new int[n];
             this.validator = new MappingValidator2SAT(n);
-            this.pointGen = new PermutedPointGenerator(n);
             this.cb = cb;
         }
 
         @Override
         public void run() {
             while (true) {
-                Tree t;
+                List<Point> t;
                 try {
                     t = Q.take();
                 } catch (InterruptedException e) {
@@ -113,21 +130,21 @@ public class BendsGenerator {
             doneSignal.countDown();
         }
 
-        private void run(Tree tree) {
-            Iterator<List<Point>> it = pointGen.generate();
+        private void run(List<Point> point) {
+            MappingFinder finder = new QuickMappingFinder(point);
+
+            Iterator<Tree> it = trees.iterator();
             while (it.hasNext()) {
-                List<Point> point = it.next();
-                boolean[] solution = run(tree, point);
+                Tree tree = it.next();
+                boolean[] solution = run(finder, tree, point);
                 cb.on(tree, point, mapping, solution);
             }
         }
 
-        private boolean[] run(Tree tree, List<Point> points) {
-            // TODO: refactor such that it becomes For each pointset -> For each
-            // tree
-            // instead of For each tree -> For each pointset
-            // to make use of mapping finders optimizations per point set
-            MappingFinder finder = new QuickMappingFinder(points);
+        private boolean[] run(
+                MappingFinder finder,
+                Tree tree,
+                List<Point> points) {
             if (finder.findMapping(tree, mapping)) {
                 // found valid mapping
 

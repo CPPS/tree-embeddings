@@ -1,6 +1,7 @@
 package nl.tue.cpps.lbend.tree;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,5 +67,14 @@ public final class CompactTreeReader extends AbstractIterator<Tree> implements T
     public static void forN(int n, IOConsumer<CompactTreeReader> cb)
             throws IOException {
         forFile(new File(TreeCompactor.OUT_DIR, n + ".tree"), cb);
+    }
+
+    public static TreeProvider forBuf(byte[] buf) throws IOException {
+        InputStream fis = new ByteArrayInputStream(buf);
+        InputStream zis = new GZIPInputStream(fis);
+        InputStream bis = new BufferedInputStream(zis, (1 << 16) - 1);
+        DataInputStream dis = new DataInputStream(bis);
+        CompactTreeReader w = new CompactTreeReader(dis); //
+        return w;
     }
 }

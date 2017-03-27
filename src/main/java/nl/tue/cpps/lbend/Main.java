@@ -9,9 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 
-import nl.tue.cpps.lbend.tree.CompactTreeReader;
-import nl.tue.cpps.lbend.tree.PlainTreeReader;
-import nl.tue.cpps.lbend.tree.TreeProvider;
+import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.tree.TreeIterable;
 
 public class Main {
     // Recommended JVM flags:
@@ -19,16 +18,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         int n = 7;
 
-        if (false) {
-            run(n, new PlainTreeReader(new File("trees"), n));
-        } else {
-            CompactTreeReader.forN(n, trees -> {
-                run(n, trees);
-            });
-        }
+        run(n, new TreeIterable(new File("compact-trees/" + n + ".tree")));
     }
 
-    private static void run(int n, TreeProvider treeGen) {
+    private static void run(int n, Iterable<Tree> treeGen) {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
