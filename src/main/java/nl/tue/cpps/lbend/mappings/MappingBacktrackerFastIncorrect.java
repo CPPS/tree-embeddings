@@ -54,9 +54,11 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
 
     private LBend[][][] allBends;
 
-    public MappingBacktrackerFastIncorrect(int n) {
+    public MappingBacktrackerFastIncorrect(
+            int n,
+            MappingValidator2SAT validator) {
         this.n = n;
-        this.validator = new MappingValidator2SAT(n);
+        this.validator = validator;
         this.contained = new boolean[n];
         this.availablePoints = new boolean[n];
     }

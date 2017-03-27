@@ -11,13 +11,16 @@ import nl.tue.cpps.lbend.geometry.Tree;
 public final class QuickMappingFinder implements MappingFinder {
     private final Random random = new Random(0);
 
+    private final MappingValidator2SAT validator;
     private final AbstractMappingFinder fastIncorrectBacktracker;
     private final AbstractMappingFinder correctBacktracker;
 
     private List<Point> points;
 
     public QuickMappingFinder(int n) {
-        fastIncorrectBacktracker = new MappingBacktrackerFastIncorrect(n);
+        validator = new MappingValidator2SAT(n);
+        fastIncorrectBacktracker = new MappingBacktrackerFastIncorrect(
+                n, validator);
         correctBacktracker = new MappingBacktrackerCorrect(n);
     }
 
@@ -47,20 +50,22 @@ public final class QuickMappingFinder implements MappingFinder {
         return false;
     }
 
-    private boolean getMappingByShuffle(List<Point> points, Tree tree, int maxShuffles, int[] mapping) {
-        MappingValidator2SAT validator = new MappingValidator2SAT(points.size());
+    private boolean getMappingByShuffle(
+            List<Point> points, Tree tree,
+            int maxShuffles,
+            int[] mapping) {
         int n = points.size();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             mapping[i] = i;
+        }
 
         while (maxShuffles-- > 0) {
             shuffle(mapping);
             if (validator.validate(tree, mapping, points)) {
-                // System.err.println("yes shuffle");
                 return true;
             }
         }
-        // System.err.println("no shuffle");
+
         return false;
     }
 
