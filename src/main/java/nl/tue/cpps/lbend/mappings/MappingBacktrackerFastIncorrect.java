@@ -95,8 +95,8 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
             }
 
             availablePoints[i] = true;
-
         }
+
         return false;
     }
 
@@ -107,12 +107,14 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
         int child = children.get(childIdx);
         BacktrackResult thisResult = new BacktrackResult(child);
 
-        List<Integer> childrenOfChild = new ArrayList<>(tree.getNode(child).getNeighbours());
+        List<Integer> childrenOfChild = new ArrayList<>(
+                tree.getNode(child).getNeighbours());
         childrenOfChild.remove((Integer) root);
 
         for (int point = 0; point < availablePoints.length; point++) {
-            if (!availablePoints[point])
+            if (!availablePoints[point]) {
                 continue; // not available
+            }
 
             // place child at point
             mapping[child] = point;
@@ -120,52 +122,59 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
             thisResult.locationPlaced = point;
 
             for (LBend bend : getLBends(rootLocation, point)) {
+                if (intersects(bends, bend)) {
+                    continue;
+                }
 
-                if (!intersects(bends, bend)) {
-                    bends.add(bend);
-                    thisResult.bendsToRemove.add(bend);
+                bends.add(bend);
+                thisResult.bendsToRemove.add(bend);
 
-                    if (childrenOfChild.isEmpty()) {
-                        // node has no children, leaf
+                if (childrenOfChild.isEmpty()) {
+                    // node has no children, leaf
 
-                        if (childIdx >= children.size() - 1) {
-                            // last child
-                            return thisResult.setResult(true);
-                        } else {
-                            // backtrack to next child
-                            BacktrackResult bResult = backtrackMapping(root, rootLocation, children, childIdx + 1,
-                                    availablePoints, bends, mapping);
-                            if (bResult.result) {
-                                return thisResult.setResult(true);
-                            }
-                        }
-                    } else {
-                        // find subtree under child
-                        BacktrackResult bResult = backtrackMapping(child, point, childrenOfChild, 0, availablePoints,
-                                bends, mapping);
-                        if (bResult.result) {
-
-                            thisResult.resultsToUndo.add(bResult);
-
-                            if (childIdx >= childrenOfChild.size() - 1 || childIdx >= children.size() - 1) {
-                                return thisResult.setResult(true);
-                            }
-
-                            BacktrackResult bResult2 = backtrackMapping(root, rootLocation, children, childIdx + 1,
-                                    availablePoints, bends, mapping);
-                            if (bResult2.result) {
-                                thisResult.resultsToUndo.add(bResult2);
-                                return thisResult.setResult(true);
-                            }
-
-                            // else undo backtrack
-                            bResult.undo(bends, mapping, availablePoints);
-                        }
+                    if (childIdx >= children.size() - 1) {
+                        // last child
+                        return thisResult.setResult(true);
                     }
 
-                    bends.remove(bends.size() - 1);
-                    thisResult.bendsToRemove.remove(bend);
+                    // backtrack to next child
+                    BacktrackResult bResult = backtrackMapping(
+                            root, rootLocation,
+                            children, childIdx + 1,
+                            availablePoints, bends, mapping);
+                    if (bResult.result) {
+                        return thisResult.setResult(true);
+                    }
+                } else {
+                    // find subtree under child
+                    BacktrackResult bResult = backtrackMapping(
+                            child, point,
+                            childrenOfChild, 0,
+                            availablePoints, bends, mapping);
+                    if (bResult.result) {
+                        thisResult.resultsToUndo.add(bResult);
+
+                        if (childIdx >= childrenOfChild.size() - 1
+                                || childIdx >= children.size() - 1) {
+                            return thisResult.setResult(true);
+                        }
+
+                        BacktrackResult bResult2 = backtrackMapping(
+                                root, rootLocation,
+                                children, childIdx + 1,
+                                availablePoints, bends, mapping);
+                        if (bResult2.result) {
+                            thisResult.resultsToUndo.add(bResult2);
+                            return thisResult.setResult(true);
+                        }
+
+                        // else undo backtrack
+                        bResult.undo(bends, mapping, availablePoints);
+                    }
                 }
+
+                bends.remove(bends.size() - 1);
+                thisResult.bendsToRemove.remove(bend);
             }
 
             mapping[child] = -1;
@@ -209,38 +218,41 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
 
     private boolean intersects(List<LBend> bends, LBend bend) {
         for (LBend bend1 : bends) {
-            if (bend1.intersectsWith(bend))
+            if (bend1.intersectsWith(bend)) {
                 return true;
+            }
         }
+
         return false;
     }
 
     private boolean validateMapping(Tree tree, List<Point> points, int[] mapping) {
         for (int i = 0; i < n; i++) {
             // no -1 values
-            if (mapping[i] < 0)
+            if (mapping[i] < 0) {
                 return false;
+            }
         }
 
         if (!validator.validate(tree, mapping, points)) {
             return false;
-            // throw new AssertionError("Invalid mapping, 2-SAT can't find
-            // non-intersecting positioning of l-bends");
         }
 
         Arrays.fill(contained, false);
 
         for (int i = 0; i < n; i++) {
             int val = mapping[i];
-            if (val >= 0 && val < n)
+            if (val >= 0 && val < n) {
                 contained[mapping[i]] = true;
+            }
         }
 
         for (int i = 0; i < n; i++) {
-            if (!contained[i])
-                return false;// throw new AssertionError("Point " + i + " does
-                             // not have a node mapped to it");
+            if (!contained[i]) {
+                return false;
+            }
         }
+
         return true;
     }
 }
