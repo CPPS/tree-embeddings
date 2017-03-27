@@ -50,6 +50,7 @@ import nl.tue.cpps.lbend.geometry.Tree;
 public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
     private final Queue<TreeNode> Q = new ArrayDeque<>();
     private final TreeNode root = new TreeNode(0, -1, -1);
+    private final List<LBend> bends = new ArrayList<>();
 
     private final int n;
     private final boolean[] availableLocations;
@@ -81,12 +82,13 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
             availableLocations[i] = false;
             mapping[0] = i;
             Q.clear();
+            bends.clear();
 
             root.addChildrenToQueue(tree, Q, i);
             if (backtrackMapping(
                     Q,
                     availableLocations,
-                    new ArrayList<>(),
+                    bends,
                     mapping)) {
                 return true;
             }
@@ -136,7 +138,7 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
 
                 // not possible
                 // continue with next bend/location
-                bends.remove(bend);
+                bends.remove(bends.size() - 1);
             }
             availableLocations[location] = true;
             mapping[treeNode.node] = -1;
