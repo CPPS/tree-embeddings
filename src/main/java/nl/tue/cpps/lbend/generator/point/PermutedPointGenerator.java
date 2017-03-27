@@ -1,5 +1,6 @@
 package nl.tue.cpps.lbend.generator.point;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -50,5 +51,56 @@ public class PermutedPointGenerator implements PointSetGenerator {
                 return out;
             }
         };
+    }
+
+    public List<Iterator<List<Point>>> splitGenerator(int nSplit) {
+        // Array of Y coordinates
+        // Points are represented as [x] = y
+        int[] y = new int[n];
+        for (int i = 0; i < n; i++) {
+            y[i] = i;
+        }
+
+        IntQuickPerm Q = new IntQuickPerm(y);
+
+        class SplitIterator implements Iterator<List<Point>> {
+            final MutablePoint[] points;
+            final List<Point> out;
+
+            SplitIterator() {
+                points = new MutablePoint[n];
+                // Prepare output list
+                for (int x = 0; x < n; x++) {
+                    points[x] = new MutablePoint(x, -1);
+                }
+                out = Collections.unmodifiableList(Arrays.asList(points));
+            }
+
+            @Override
+            public boolean hasNext() {
+                return Q.hasNext();
+            }
+
+            @Override
+            public List<Point> next() {
+                // TODO: Lock free!
+                synchronized (Q) {
+                    Q.next();
+
+                    // Transform the output
+                    for (int x = 0; x < n; x++) {
+                        points[x].setY(y[x]);
+                    }
+                }
+
+                return out;
+            }
+        }
+
+        List<Iterator<List<Point>>> its = new ArrayList<>(nSplit);
+        for (int i = 0; i < nSplit; i++) {
+            its.add(new SplitIterator());
+        }
+        return its;
     }
 }

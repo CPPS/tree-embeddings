@@ -1,11 +1,7 @@
 package nl.tue.cpps.lbend;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 
@@ -13,7 +9,6 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
-import nl.tue.cpps.lbend.geometry.FixedPoint;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
@@ -21,9 +16,6 @@ import nl.tue.cpps.lbend.mappings.MappingFinder;
 import nl.tue.cpps.lbend.mappings.QuickMappingFinder;
 
 public class BendsGenerator {
-    private static final List<Point> DONE = Collections.unmodifiableList(
-            new ArrayList<>());
-
     private final Executor executor;
     private final int n;
     private final Iterable<Tree> trees;
@@ -48,45 +40,29 @@ public class BendsGenerator {
     }
 
     public void run(int nThreads) {
-        BlockingQueue<List<Point>> Q = new ArrayBlockingQueue<>(4 * nThreads);
 
         CountDownLatch doneSignal = new CountDownLatch(nThreads);
+        List<Iterator<List<Point>>> pointGen = new PermutedPointGenerator(n).splitGenerator(nThreads);
 
         for (int i = 0; i < nThreads; i++) {
-            Runner runner = new Runner(trees, Q, doneSignal, n, cb);
-            executor.execute(runner);
+            executor.execute(new Runner(
+                    pointGen.get(i),
+                    trees,
+                    doneSignal,
+                    n,
+                    cb));
         }
 
-        Iterator<List<Point>> pointGen = new PermutedPointGenerator(n).generate();
-
         try {
-            while (pointGen.hasNext()) {
-                Q.put(copyPoints(pointGen.next()));
-            }
-
-            for (int i = 0; i < nThreads; i++) {
-                Q.put(DONE);
-            }
-
             doneSignal.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Point> copyPoints(List<Point> next) {
-        List<Point> out = new ArrayList<>(next.size());
-
-        for (Point n : next) {
-            out.add(FixedPoint.of(n));
-        }
-
-        return out;
-    }
-
     private static final class Runner implements Runnable {
+        private final Iterator<List<Point>> points;
         private final Iterable<Tree> trees;
-        private final BlockingQueue<List<Point>> Q;
         private final CountDownLatch doneSignal;
         @SuppressWarnings("unused")
         private final int n;
@@ -95,13 +71,13 @@ public class BendsGenerator {
         private final Callback cb;
 
         public Runner(
+                Iterator<List<Point>> points,
                 Iterable<Tree> trees,
-                BlockingQueue<List<Point>> Q,
                 CountDownLatch doneSignal,
                 int n,
                 Callback cb) {
+            this.points = points;
             this.trees = trees;
-            this.Q = Q;
             this.doneSignal = doneSignal;
             this.n = n;
             this.mapping = new int[n];
@@ -111,20 +87,8 @@ public class BendsGenerator {
 
         @Override
         public void run() {
-            while (true) {
-                List<Point> t;
-                try {
-                    t = Q.take();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
-                }
-
-                if (t == DONE) {
-                    break;
-                }
-
-                run(t);
+            while (points.hasNext()) {
+                run(points.next());
             }
 
             doneSignal.countDown();
