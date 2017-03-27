@@ -24,8 +24,7 @@ public class BendsGenerator {
     @ThreadSafe
     interface Callback {
         void on(
-                Tree tree, List<Point> points,
-                @Nullable int[] mapping, @Nullable boolean[] solution);
+                Tree tree, List<Point> points, @Nullable int[] mapping);
     }
 
     BendsGenerator(
@@ -100,34 +99,16 @@ public class BendsGenerator {
             Iterator<Tree> it = trees.iterator();
             while (it.hasNext()) {
                 Tree tree = it.next();
-                boolean[] solution = run(finder, tree, point);
-                cb.on(tree, point, mapping, solution);
+                boolean solution = run(finder, tree, point);
+                cb.on(tree, point, solution ? mapping : null);
             }
         }
 
-        private boolean[] run(
+        private boolean run(
                 MappingFinder finder,
                 Tree tree,
                 List<Point> points) {
-            if (finder.findMapping(tree, mapping)) {
-                // found valid mapping
-
-                // get placement of bends
-                // TODO: we do not want to do this for each tree, pointset and
-                // mapping,
-                // as finding A mapping is enough, and ensures a valid placement
-                // of bends is possible
-                return run(tree, points, mapping);
-            }
-
-            return null;
-        }
-
-        private boolean[] run(Tree tree, List<Point> points, int[] mapping) {
-            return validator.validateWithSolution(
-                    tree,
-                    mapping,
-                    points);
+            return finder.findMapping(tree, mapping);
         }
     }
 }

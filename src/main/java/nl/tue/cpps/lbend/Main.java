@@ -16,7 +16,7 @@ public class Main {
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 7;
+        int n = 9;
 
         run(n, new TreeIterable(new File("compact-trees/" + n + ".tree")));
     }
@@ -25,7 +25,7 @@ public class Main {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
-        Dumper dumper = new DummyDumper();
+        // Dumper dumper = new DummyDumper();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
@@ -33,17 +33,22 @@ public class Main {
                 executor,
                 treeGen,
                 n,
-                (tree, points, mapping, solution) -> {
+                (tree, points, mapping) -> {
                     int i = cnt.getAndIncrement();
                     if (mapping == null) {
                         throw new RuntimeException(tree + " " + points);
                     }
+                    if (i % 10000 == 0) {
+                        System.out.println(i);
+                    }
 
-                    System.out.println("" +
-                            i + " " + points + " " +
-                            Arrays.toString(mapping));
+                    // Printing is too slow :(
+                    /*
+                     * System.out.println("" + i + " " + points + " " +
+                     * Arrays.toString(mapping));
+                     */
 
-                    dumper.draw(i, tree, points, mapping, solution);
+                    // dumper.draw(i, tree, points, mapping);
                 }).run(nCores);
 
         long ms = stopwatch.elapsed(TimeUnit.MILLISECONDS);
