@@ -59,7 +59,7 @@ public class BendsGenerator {
     }
 
     private static final class Runner implements Runnable {
-        private final MappingFinder finder = new QuickMappingFinder();
+        private final MappingFinder finder;
 
         private final Iterator<List<Point>> points;
         private final Iterable<Tree> trees;
@@ -75,6 +75,7 @@ public class BendsGenerator {
                 CountDownLatch doneSignal,
                 int n,
                 Callback cb) {
+            this.finder = new QuickMappingFinder(n);
             this.points = points;
             this.trees = trees;
             this.doneSignal = doneSignal;

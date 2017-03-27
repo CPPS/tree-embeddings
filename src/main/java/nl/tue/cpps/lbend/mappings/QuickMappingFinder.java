@@ -3,22 +3,30 @@ package nl.tue.cpps.lbend.mappings;
 import java.util.List;
 import java.util.Random;
 
+import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
-public class QuickMappingFinder implements MappingFinder {
+public final class QuickMappingFinder implements MappingFinder {
     private final Random random = new Random(0);
 
-    private final MappingFinder fastIncorrectBacktracker = new MappingBacktrackerFastIncorrect();
-    private final MappingFinder correctBacktracker = new MappingBacktrackerCorrect();
+    private final AbstractMappingFinder fastIncorrectBacktracker;
+    private final AbstractMappingFinder correctBacktracker;
 
     private List<Point> points;
 
+    public QuickMappingFinder(int n) {
+        fastIncorrectBacktracker = new MappingBacktrackerFastIncorrect(n);
+        correctBacktracker = new MappingBacktrackerCorrect(n);
+    }
+
     @Override
     public MappingFinder setPointSet(List<Point> points) {
-        fastIncorrectBacktracker.setPointSet(points);
-        correctBacktracker.setPointSet(points);
+        LBend[][][] bends = LBend.createAllBends(points);
+        fastIncorrectBacktracker.setPoints(points, bends);
+        correctBacktracker.setPoints(points, bends);
+
         this.points = points;
 
         return this;

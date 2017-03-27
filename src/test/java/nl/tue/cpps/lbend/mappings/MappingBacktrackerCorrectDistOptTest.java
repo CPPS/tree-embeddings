@@ -1,27 +1,27 @@
-package mappings;
+package nl.tue.cpps.lbend.mappings;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
-import nl.tue.cpps.lbend.mappings.MappingBacktrackerCorrect;
-import nl.tue.cpps.lbend.mappings.MappingBacktrackerCorrectDistOpt;
 
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
 
+@Deprecated // Not used
 public class MappingBacktrackerCorrectDistOptTest {
 
     @Test
     public void testFindMapping() throws Exception {
-
-        MappingBacktrackerCorrect backtrackerCorrect = new MappingBacktrackerCorrect();
+        Tree tree = new Tree(13).connect(0, 1).connect(0, 2).connect(0, 3).connect(1, 4).connect(1, 5).connect(1, 6).connect(2, 7).connect(2, 8).connect(2, 9).connect(3, 10).connect(3, 11).connect(3, 12);
+        int n = tree.size();
+        
+        MappingBacktrackerCorrect backtrackerCorrect = new MappingBacktrackerCorrect(n);
         MappingBacktrackerCorrectDistOpt backtrackerDist = new MappingBacktrackerCorrectDistOpt();
 
 //        for (Tree tree : MappingBacktrackerTest.getListOfTestTrees()) {
-            Tree tree = new Tree(13).connect(0, 1).connect(0, 2).connect(0, 3).connect(1, 4).connect(1, 5).connect(1, 6).connect(2, 7).connect(2, 8).connect(2, 9).connect(3, 10).connect(3, 11).connect(3, 12);
-            int n = tree.size();
+            
             PermutedPointGenerator pointGenerator = new PermutedPointGenerator(n);
 
             int pointSetIdx = 0;

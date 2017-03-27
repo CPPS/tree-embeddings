@@ -38,7 +38,7 @@ public class MappingBacktrackerTest {
 
                 if (pointSetIdx % 1000 == 0) System.out.println("n=" + n + " #" + pointSetIdx /*+ " " + points*/);
 
-                QuickMappingFinder mapper = new QuickMappingFinder();
+                QuickMappingFinder mapper = new QuickMappingFinder(n);
                 mapper.setPointSet(points);
                 int[] mapping = mapper.findMapping(tree);
                 if (mapping == null) {

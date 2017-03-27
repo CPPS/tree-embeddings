@@ -1,13 +1,14 @@
 package nl.tue.cpps.lbend.mappings;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import lombok.RequiredArgsConstructor;
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.Node;
 import nl.tue.cpps.lbend.geometry.Point;
@@ -16,14 +17,18 @@ import nl.tue.cpps.lbend.geometry.Tree;
 /**
  * Not thread safe!
  */
-public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
+@Deprecated // Not used
+final class MappingBacktrackerCorrectDistOpt implements MappingFinder {
+    private final Queue<TreeNode> Q = new ArrayDeque<>();
+    private final TreeNode root = new TreeNode(0, -1, -1);
+
     private List<Point> points;
     private Tree tree;
     private int n;
 
     private int[][] closestPoints;
     private int[] rootOrder;
-
+    
     @Override
     public MappingFinder setPointSet(List<Point> points) {
         this.points = points;
@@ -36,7 +41,8 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
             Integer[] neighbours = new Integer[n - 1];
             int idx = 0;
             for (int j = 0; j < n; j++) {
-                if (i == j) continue;
+                if (i == j)
+                    continue;
                 neighbours[idx++] = j;
             }
 
@@ -67,8 +73,7 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
             availableLocations[i] = false;
             mapping[0] = i;
 
-            Queue<TreeNode> Q = new LinkedList<>();
-            TreeNode root = new TreeNode(0, -1, -1);
+            Q.clear();
             root.addChildrenToQueue(Q, i);
             if (backtrackMapping(Q, availableLocations, new ArrayList<>(), mapping)) {
                 return true;
@@ -77,85 +82,67 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
         return false;
     }
 
-
     /**
-     * Try first l-bend of p1, see if sub tree of p1 can be placed.
-     *  yes? -> try all positions for p2, each position both l-bends
-     *      exists possible placement -> return true
-     *      no possible placement -> try second bend of p1. Goto begin
-     *  no? -> try second bend of p1. Goto begin.
+     * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try
+     * all positions for p2, each position both l-bends exists possible
+     * placement -> return true no possible placement -> try second bend of p1.
+     * Goto begin no? -> try second bend of p1. Goto begin.
      *
-     *  List<Integer> children
-     *  List<LBend> bends for each location of each child
+     * List<Integer> children List<LBend> bends for each location of each child
      *
-     *  input:
-     *  list of children
-     *  index of current child
-     *  global mapping
-     *  list of available point (indices)
-     *  list of placed lbends
+     * input: list of children index of current child global mapping list of
+     * available point (indices) list of placed lbends
      *
-     *  TODO: add further backtracking, not only to children
+     * TODO: add further backtracking, not only to children
      *
-     *  child i
-     *  root on point pr
-     *  for (Point point : availablePoints) {
-     *      for (LBend bend : bends) {
-     *          if (bend does not intersect) {
+     * child i root on point pr for (Point point : availablePoints) { for (LBend
+     * bend : bends) { if (bend does not intersect) {
      *
-     *              if (child i is leaf) {
-     *                  if (i is last child) return true;
+     * if (child i is leaf) { if (i is last child) return true;
      *
-     *                  if (backtrack i + 1) return true;
-     *              }
+     * if (backtrack i + 1) return true; }
      *
-     *              if (backtrack such that a subtree from child i is possible) {
+     * if (backtrack such that a subtree from child i is possible) {
      *
-     *                  // check if last child, or further backtracking should follow
-     *                  if (i is last child || backtrack i + 1) {
-     *                      return true;
-     *                  }
+     * // check if last child, or further backtracking should follow if (i is
+     * last child || backtrack i + 1) { return true; }
      *
-     *              }
-     *          }
-     *      }
-     *  }
-     *  return false;
+     * } } } } return false;
      *
      *
-     *  initial call:
-     *  int[] mapping = new int[n];
-     *  for (point p : points) {
-     *      mapping[i] = p;
-     *      if (backtrack(root=0, rootlocation=p, children=nodes[0].children, childIdx=0, availablePoints=points-p, bends=[], mapping)) {
-     *          return mapping;
-     *      }
-     *  }
-     *  return null;
+     * initial call: int[] mapping = new int[n]; for (point p : points) {
+     * mapping[i] = p; if (backtrack(root=0, rootlocation=p,
+     * children=nodes[0].children, childIdx=0, availablePoints=points-p,
+     * bends=[], mapping)) { return mapping; } } return null;
      */
 
-    private boolean backtrackMapping(Queue<TreeNode> Q, boolean[] availableLocations, List<LBend> bends, int[] mapping) {
+    private boolean backtrackMapping(Queue<TreeNode> Q, boolean[] availableLocations, List<LBend> bends,
+            int[] mapping) {
         if (Q.isEmpty()) {
             return true;
         }
 
         TreeNode treeNode = Q.poll();
 
-//        if (availableLocations[treeNode.parentLocation])
-//            throw new AssertionError("parent: " + treeNode.parent + ", available: " + Arrays.toString(availableLocations) +
-//                                    ", mapping: " + Arrays.toString(mapping));
-//        if (mapping[treeNode.parent] != treeNode.parentLocation)
-//            throw new AssertionError("mapping: " + mapping[treeNode.parent] + ", treeNode: " + treeNode.parentLocation);
+        // if (availableLocations[treeNode.parentLocation])
+        // throw new AssertionError("parent: " + treeNode.parent + ", available:
+        // " + Arrays.toString(availableLocations) +
+        // ", mapping: " + Arrays.toString(mapping));
+        // if (mapping[treeNode.parent] != treeNode.parentLocation)
+        // throw new AssertionError("mapping: " + mapping[treeNode.parent] + ",
+        // treeNode: " + treeNode.parentLocation);
 
         int[] neighboursSortedByDist = closestPoints[treeNode.parentLocation];
         for (int location : neighboursSortedByDist) {
-            if (!availableLocations[location]) continue; // not available
+            if (!availableLocations[location])
+                continue; // not available
 
             availableLocations[location] = false;
-//            if (mapping[treeNode.node] != -1) throw new AssertionError();
+            // if (mapping[treeNode.node] != -1) throw new AssertionError();
             mapping[treeNode.node] = location;
             for (LBend bend : getLBends(treeNode.parentLocation, location)) {
-                if (intersects(bends, bend)) continue;
+                if (intersects(bends, bend))
+                    continue;
 
                 Queue<TreeNode> copyQ = copyQueue(Q);
 
@@ -175,42 +162,32 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
             }
             availableLocations[location] = true;
             mapping[treeNode.node] = -1;
-//            treeNode.removeChildrenFromQueue(Q, location);
+            // treeNode.removeChildrenFromQueue(Q, location);
         }
         return false;
     }
 
     private static <E> Queue<E> copyQueue(Queue<E> queue) {
-        LinkedList<E> copy = new LinkedList<>();
-        for (E e : queue) {
-            copy.add(e);
-        }
-        return copy;
+        return new ArrayDeque<>(queue);
     }
 
     private static <E> void restoreQueue(Queue<E> toRestore, Queue<E> restoreTo) {
         toRestore.clear();
-        for (E e : restoreTo) {
-            toRestore.add(e);
-        }
+        toRestore.addAll(restoreTo);
     }
 
-    private class TreeNode {
+    @RequiredArgsConstructor
+    private final class TreeNode {
         final int node;
         final int parent;
         final int parentLocation;
-
-        TreeNode(int node, int parent, int parentLocation) {
-            this.node = node;
-            this.parent = parent;
-            this.parentLocation = parentLocation;
-        }
 
         void addChildrenToQueue(Queue<TreeNode> Q, int nodeLocation) {
             Node node = tree.getNode(this.node);
 
             for (int neighbour : node.getNeighbours()) {
-                if (neighbour == parent) continue;
+                if (neighbour == parent)
+                    continue;
 
                 Q.add(new TreeNode(neighbour, this.node, nodeLocation));
             }
@@ -218,7 +195,7 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
 
         @SuppressWarnings("unused")
         void removeChildrenFromQueue(Queue<TreeNode> Q, int nodeLocation) {
-            for (Iterator<TreeNode> iter = Q.iterator(); iter.hasNext(); ) {
+            for (Iterator<TreeNode> iter = Q.iterator(); iter.hasNext();) {
                 TreeNode tn = iter.next();
 
                 if (tn.parentLocation == nodeLocation && tn.parent == this.node)
@@ -228,20 +205,23 @@ public class MappingBacktrackerCorrectDistOpt implements MappingFinder {
     }
 
     public static boolean intersects(List<LBend> bends, LBend bend) {
-//        if (true) return Math.random() < 0.99;
+        // if (true) return Math.random() < 0.99;
         for (LBend bend1 : bends) {
-            if (bend1.intersectsWith(bend)) return true;
+            if (bend1.intersectsWith(bend))
+                return true;
         }
         return false;
     }
 
     private LBend[][][] allBends;
+
     private LBend[] getLBends(int from, int to) {
         return allBends[from][to];
     }
 
     private final DistanceComparator distanceComparator = new DistanceComparator();
-    private class DistanceComparator implements Comparator<Integer> {
+
+    private final class DistanceComparator implements Comparator<Integer> {
         private Point parentPoint;
 
         public void setParentLocation(int location) {
