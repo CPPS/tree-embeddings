@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.AbstractIterator;
+
 import lombok.RequiredArgsConstructor;
 import nl.tue.cpps.lbend.generator.IntQuickPerm;
 import nl.tue.cpps.lbend.geometry.MutablePoint;
@@ -63,7 +65,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
 
         IntQuickPerm Q = new IntQuickPerm(y);
 
-        class SplitIterator implements Iterator<List<Point>> {
+        class SplitIterator extends AbstractIterator<List<Point>> {
             final MutablePoint[] points;
             final List<Point> out;
 
@@ -77,14 +79,13 @@ public class PermutedPointGenerator implements PointSetGenerator {
             }
 
             @Override
-            public boolean hasNext() {
-                return Q.hasNext();
-            }
-
-            @Override
-            public List<Point> next() {
+            protected List<Point> computeNext() {
                 // TODO: Lock free!
                 synchronized (Q) {
+                    if (!Q.hasNext()) {
+                        return endOfData();
+                    }
+
                     Q.next();
 
                     // Transform the output
