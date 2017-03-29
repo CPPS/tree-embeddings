@@ -33,7 +33,7 @@ public final class QuickMappingFinder implements MappingFinder {
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) {
         if (getMappingByShuffle(points, tree, 0, mapping)) {
             return true;
         }

@@ -72,7 +72,7 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) {
         this.tree = tree;
 
         for (int i = 0; i < n; i++) {

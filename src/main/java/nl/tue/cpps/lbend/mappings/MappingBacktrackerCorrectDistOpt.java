@@ -63,7 +63,7 @@ final class MappingBacktrackerCorrectDistOpt implements MappingFinder {
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimMS) {
         this.tree = tree;
 
         boolean[] availableLocations = new boolean[n];

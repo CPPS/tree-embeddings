@@ -3,7 +3,9 @@ package nl.tue.cpps.lbend.mappings;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.naming.TimeLimitExceededException;
 
+import lombok.SneakyThrows;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
@@ -43,5 +45,18 @@ public interface MappingFinder {
      * @param mapping the array to store the mapping in
      * @return true iff valid mapping is found
      */
-    boolean findMapping(Tree tree, int[] mapping);
+    @SneakyThrows(TimeLimitExceededException.class)
+    default boolean findMapping(Tree tree, int[] mapping) {
+        return findMapping(tree, mapping, Long.MAX_VALUE);
+    }
+
+    /**
+     * If possible mapping exists, resulting mapping will be stored
+     * in {@code mapping} and true is returned.
+     * @param tree tree
+     * @param mapping the array to store the mapping in
+     * @param maxTimeMS maximum running time hint in milliseconds
+     * @return true iff valid mapping is found
+     */
+    boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException;
 }

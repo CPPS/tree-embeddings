@@ -12,6 +12,8 @@ import nl.tue.cpps.lbend.geometry.Node;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
+import javax.naming.TimeLimitExceededException;
+
 /**
  * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try all
  * positions for p2, each position both l-bends exists possible placement ->
@@ -58,6 +60,8 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
     private Tree tree;
     private LBend[][][] allBends;
 
+    private long maxTime;
+
     public MappingBacktrackerCorrect(int n) {
         this.n = n;
         this.availableLocations = new boolean[n];
@@ -73,8 +77,9 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException {
         this.tree = tree;
+        this.maxTime = System.currentTimeMillis() + maxTimeMS;
 
         for (int i = 0; i < n; i++) {
             Arrays.fill(availableLocations, true);
@@ -101,6 +106,7 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
             boolean[] availableLocations,
             List<LBend> bends,
             int[] mapping) {
+
         if (Q.isEmpty()) {
             return true;
         }
