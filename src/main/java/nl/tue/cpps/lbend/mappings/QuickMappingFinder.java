@@ -8,6 +8,8 @@ import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
+import javax.naming.TimeLimitExceededException;
+
 public final class QuickMappingFinder implements MappingFinder {
     private final Random random = new Random(0);
 
@@ -19,7 +21,7 @@ public final class QuickMappingFinder implements MappingFinder {
 
     public QuickMappingFinder(int n) {
         validator = new MappingValidator2SAT(n);
-        fastIncorrectBacktracker = new MappingBacktrackerFastIncorrect(
+        fastIncorrectBacktracker = new MappingBacktrackerFastIncomplete(
                 n, validator);
         correctBacktracker = new MappingBacktrackerCorrect(n);
     }
@@ -36,14 +38,14 @@ public final class QuickMappingFinder implements MappingFinder {
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) {
-        if (getMappingByShuffle(points, tree, 0, mapping)) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException {
+//        if (getMappingByShuffle(points, tree, 0, mapping)) {
+//            return true;
+//        }
+        if (fastIncorrectBacktracker.findMapping(tree, mapping, maxTimeMS)) {
             return true;
         }
-        if (fastIncorrectBacktracker.findMapping(tree, mapping)) {
-            return true;
-        }
-        if (correctBacktracker.findMapping(tree, mapping)) {
+        if (correctBacktracker.findMapping(tree, mapping, maxTimeMS)) {
             return true;
         }
 

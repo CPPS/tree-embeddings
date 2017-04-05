@@ -2,6 +2,7 @@ package nl.tue.cpps.lbend;
 
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,17 +14,18 @@ import nl.tue.cpps.lbend.geometry.Tree;
 import nl.tue.cpps.lbend.tree.TreeIterable;
 
 public class Main {
-    private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance();
+    private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance(Locale.US);
 
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 8;
+        int n = 7;
+        long maxTimeForMappingMS = 5_000; // 5 sec
 
-        run(n, new TreeIterable(new File("compact-trees/" + n + ".tree")));
+        run(n, maxTimeForMappingMS, new TreeIterable(new File("compact-trees/" + n + ".tree")));
     }
 
-    private static void run(int n, Iterable<Tree> treeGen) {
+    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen) {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
@@ -35,20 +37,24 @@ public class Main {
                 executor,
                 treeGen,
                 n,
-                (tree, points, mapping) -> {
+                maxTimeForMappingMS,
+                (tree, points, mapping, overTime) -> {
                     int i = cnt.getAndIncrement();
                     if (mapping == null) {
-                        throw new RuntimeException(tree + " " + points);
+                        if (overTime) {
+                            System.err.println("Overtime: " + tree + " " + points);
+                        } else {
+                            throw new RuntimeException(tree + " " + points);
+                        }
                     }
                     if (i % 10000 == 0) {
                         System.out.println(NR_FORMAT.format(i));
                     }
 
                     // Printing is too slow :(
-                    /*
-                     * System.out.println("" + i + " " + points + " " +
-                     * Arrays.toString(mapping));
-                     */
+
+//                     System.out.println("" + i + " " + points + " " +
+//                     Arrays.toString(mapping));
 
                     // dumper.draw(i, tree, points, mapping);
                 }).run(nCores);

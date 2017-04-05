@@ -11,6 +11,7 @@ import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.Node;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.util.Stats;
 
 import javax.naming.TimeLimitExceededException;
 
@@ -60,7 +61,10 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
     private Tree tree;
     private LBend[][][] allBends;
 
-    private long maxTime;
+    private long maxSteps;
+    private long maxTimeMS;
+    private long stepCounter;
+    private long startTime;
 
     public MappingBacktrackerCorrect(int n) {
         this.n = n;
@@ -79,7 +83,10 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
     @Override
     public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException {
         this.tree = tree;
-        this.maxTime = System.currentTimeMillis() + maxTimeMS;
+        this.maxSteps = maxTimeMS < Long.MAX_VALUE / 900 ? maxTimeMS * 900 : Long.MAX_VALUE; // around 900 steps are executed per ms
+        this.maxTimeMS = maxTimeMS;
+        this.stepCounter = 0;
+        this.startTime = System.currentTimeMillis();
 
         for (int i = 0; i < n; i++) {
             Arrays.fill(availableLocations, true);
@@ -105,10 +112,15 @@ public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
             Queue<TreeNode> Q,
             boolean[] availableLocations,
             List<LBend> bends,
-            int[] mapping) {
+            int[] mapping) throws TimeLimitExceededException {
 
         if (Q.isEmpty()) {
             return true;
+        }
+
+        stepCounter++;
+        if (stepCounter > maxSteps) {
+            throw new TimeLimitExceededException("allowed: " + maxTimeMS + ", used: " + (System.currentTimeMillis() - startTime));
         }
 
         TreeNode treeNode = Q.remove();

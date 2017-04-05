@@ -8,6 +8,9 @@ import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.util.Stats;
+
+import javax.naming.TimeLimitExceededException;
 
 /**
  * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try all
@@ -42,7 +45,7 @@ import nl.tue.cpps.lbend.geometry.Tree;
  * childIdx=0, availablePoints=points-p, bends=[], mapping)) { return mapping; }
  * } return null;
  */
-public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder {
+public final class MappingBacktrackerFastIncomplete extends AbstractMappingFinder {
     private final int n;
     private final MappingValidator2SAT validator;
     private final boolean[] contained;
@@ -54,7 +57,12 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
 
     private LBend[][][] allBends;
 
-    public MappingBacktrackerFastIncorrect(
+    private long maxSteps;
+    private long maxTimeMS;
+    private long stepCounter;
+    private long startTime;
+
+    public MappingBacktrackerFastIncomplete(
             int n,
             MappingValidator2SAT validator) {
         this.n = n;
@@ -74,8 +82,12 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
     }
 
     @Override
-    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) {
+    public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException {
         this.tree = tree;
+        this.maxSteps = maxTimeMS < Long.MAX_VALUE / 1000 ? maxTimeMS * 1000 : Long.MAX_VALUE; // around 1000 steps are executed per ms
+        this.maxTimeMS = maxTimeMS;
+        this.stepCounter = 0;
+        this.startTime = System.currentTimeMillis();
 
         for (int i = 0; i < n; i++) {
             Arrays.fill(availablePoints, true);
@@ -105,7 +117,13 @@ public final class MappingBacktrackerFastIncorrect extends AbstractMappingFinder
     private BacktrackResult backtrackMapping(
             int root, int rootLocation,
             List<Integer> children, int childIdx,
-            boolean[] availablePoints, List<LBend> bends, int[] mapping) {
+            boolean[] availablePoints, List<LBend> bends, int[] mapping) throws TimeLimitExceededException {
+
+        stepCounter++;
+        if (stepCounter > maxSteps) {
+            throw new TimeLimitExceededException("allowed: " + maxTimeMS + ", used: " + (System.currentTimeMillis() - startTime));
+        }
+
         int child = children.get(childIdx);
         BacktrackResult thisResult = new BacktrackResult(child);
 

@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.naming.TimeLimitExceededException;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
@@ -17,22 +18,25 @@ import nl.tue.cpps.lbend.mappings.QuickMappingFinder;
 public class BendsGenerator {
     private final Executor executor;
     private final int n;
+    private final long maxTimeForMappingMS;
     private final Iterable<Tree> trees;
     private final Callback cb;
 
     @ThreadSafe
     interface Callback {
         void on(
-                Tree tree, List<Point> points, @Nullable int[] mapping);
+                Tree tree, List<Point> points, @Nullable int[] mapping, boolean overTime);
     }
 
     BendsGenerator(
             Executor executor,
             Iterable<Tree> trees,
             int n,
+            long maxTimeForMappingMS,
             Callback cb) {
         this.executor = executor;
         this.n = n;
+        this.maxTimeForMappingMS = maxTimeForMappingMS;
         this.trees = trees;
         this.cb = cb;
     }
@@ -48,6 +52,7 @@ public class BendsGenerator {
                     trees,
                     doneSignal,
                     n,
+                    maxTimeForMappingMS,
                     cb));
         }
 
@@ -66,6 +71,7 @@ public class BendsGenerator {
         private final CountDownLatch doneSignal;
         @SuppressWarnings("unused")
         private final int n;
+        private final long maxTimeForMappingMS;
         private final int[] mapping;
         private final Callback cb;
 
@@ -74,12 +80,14 @@ public class BendsGenerator {
                 Iterable<Tree> trees,
                 CountDownLatch doneSignal,
                 int n,
+                long maxTimeForMappingMS,
                 Callback cb) {
             this.finder = new QuickMappingFinder(n);
             this.points = points;
             this.trees = trees;
             this.doneSignal = doneSignal;
             this.n = n;
+            this.maxTimeForMappingMS = maxTimeForMappingMS;
             this.mapping = new int[n];
             this.cb = cb;
         }
@@ -99,16 +107,24 @@ public class BendsGenerator {
             Iterator<Tree> it = trees.iterator();
             while (it.hasNext()) {
                 Tree tree = it.next();
-                boolean solution = run(finder, tree, point);
-                cb.on(tree, point, solution ? mapping : null);
+                boolean solution, overTime;
+                try {
+                    solution = run(finder, tree, point);
+                    overTime = false;
+                } catch (TimeLimitExceededException e) {
+                    solution = false;
+                    overTime = true;
+                }
+                cb.on(tree, point, solution ? mapping : null, overTime);
             }
         }
 
         private boolean run(
                 MappingFinder finder,
                 Tree tree,
-                List<Point> points) {
-            return finder.findMapping(tree, mapping);
+                List<Point> points) throws TimeLimitExceededException {
+
+            return finder.findMapping(tree, mapping, maxTimeForMappingMS);
         }
     }
 }
