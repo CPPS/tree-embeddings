@@ -44,7 +44,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
             @Override
             public List<Point> next() {
                 Q.next();
-
+                
                 // Transform the output
                 for (int x = 0; x < n; x++) {
                     points[x].setY(y[x]);
