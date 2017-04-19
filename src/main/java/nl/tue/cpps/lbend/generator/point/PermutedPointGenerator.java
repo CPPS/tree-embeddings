@@ -15,6 +15,7 @@ import nl.tue.cpps.lbend.geometry.Point;
 
 @RequiredArgsConstructor
 public class PermutedPointGenerator implements PointSetGenerator {
+
     private final int n;
 
     @Override
@@ -44,7 +45,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
             @Override
             public List<Point> next() {
                 Q.next();
-                
+
                 // Transform the output
                 for (int x = 0; x < n; x++) {
                     points[x].setY(y[x]);
@@ -66,6 +67,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
         IntQuickPerm Q = new IntQuickPerm(y);
 
         class SplitIterator extends AbstractIterator<List<Point>> {
+
             final MutablePoint[] points;
             final List<Point> out;
 
@@ -80,20 +82,22 @@ public class PermutedPointGenerator implements PointSetGenerator {
 
             @Override
             protected List<Point> computeNext() {
+
                 // TODO: Lock free!
                 synchronized (Q) {
-                    if (!Q.hasNext()) {
-                        return endOfData();
-                    }
+                    do {
+                        if (!Q.hasNext()) {
+                            return endOfData();
+                        }
 
-                    Q.next();
+                        Q.next();
 
-                    // Transform the output
-                    for (int x = 0; x < n; x++) {
-                        points[x].setY(y[x]);
-                    }
+                        // Transform the output
+                        for (int x = 0; x < n; x++) {
+                            points[x].setY(y[x]);
+                        }
+                    } while (points[n - 1].getY() >= n / 2);
                 }
-
                 return out;
             }
         }
