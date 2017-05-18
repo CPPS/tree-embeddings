@@ -4,11 +4,13 @@ import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
 
+@Ignore
 @Deprecated // Not used
 public class MappingBacktrackerCorrectDistOptTest {
 

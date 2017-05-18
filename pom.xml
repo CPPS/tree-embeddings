@@ -16,7 +16,7 @@
 
 		<guava.version>19.0</guava.version>
 
-		<mainClass>Main</mainClass>
+		<mainClass>nl.tue.cpps.lbend.Main</mainClass>
 		<finalName>out</finalName>
 	</properties>
 

@@ -65,4 +65,9 @@ public class RandomPointGenerator implements PointSetGenerator {
 
         return ImmutableList.of(out).iterator();
     }
+
+    @Override
+    public List<Iterator<List<Point>>> splitGenerator(int nThreads) {
+        throw new UnsupportedOperationException();
+    }
 }

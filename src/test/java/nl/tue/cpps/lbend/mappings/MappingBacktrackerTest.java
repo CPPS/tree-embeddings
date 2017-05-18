@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import nl.tue.cpps.lbend.generator.IntQuickPerm;
@@ -12,6 +13,7 @@ import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
+@Ignore
 public class MappingBacktrackerTest {
     public static List<Tree> getListOfTestTrees() {
         return Arrays.asList(
