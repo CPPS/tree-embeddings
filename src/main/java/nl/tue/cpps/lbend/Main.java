@@ -3,6 +3,9 @@ package nl.tue.cpps.lbend;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 
+import joptsimple.ArgumentAcceptingOptionSpec;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Tree;
@@ -19,25 +25,53 @@ import nl.tue.cpps.lbend.tree.TreeIterable;
 public class Main {
     private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance(Locale.US);
 
+    private static OptionParser parser = new OptionParser();
+
+    private static ArgumentAcceptingOptionSpec<Integer> N = parser
+            .accepts("n")
+            .withRequiredArg()
+            .ofType(Integer.class);
+    private static ArgumentAcceptingOptionSpec<Long> MAX_MAP_TIME = parser
+            .accepts(
+                    "max-time",
+                    "The maximum amount of time to spend on mapping")
+            .withOptionalArg()
+            .ofType(Long.class)
+            .defaultsTo(5_000L); // 5 sec
+    private static ArgumentAcceptingOptionSpec<Integer> OFFSET = parser
+            .accepts(
+                    "point-offset",
+                    "The offset within the generated point offset files.")
+            .withRequiredArg()
+            .ofType(Integer.class);
+
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        int n = 7;
-        long maxTimeForMappingMS = 5_000; // 5 sec
-        int offset = 0;
+        OptionSet options = parser.parse(args);
 
-        run(n, maxTimeForMappingMS, new TreeIterable(new File("compact-trees/" + n + ".tree")), offset);
+        int n = options.valueOf(N);
+        long maxTimeForMapping = options.valueOf(MAX_MAP_TIME);
+        int offset = options.valueOf(OFFSET);
+
+        TreeIterable trees = new TreeIterable(new File(
+                "compact-trees/" + n + ".tree"));
+        PointSetGenerator pointGen = new ReadingPointGenerator(n, offset);
+        run(
+                n,
+                maxTimeForMapping,
+                trees, pointGen);
     }
 
-    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen, int offset) throws IOException {
+    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen, PointSetGenerator pointGen)
+            throws IOException {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
         // Dumper dumper = new DummyDumper();
-        PointSetGenerator pointGen;
+        ;
 
         // points = new PermutedPointGenerator(n);
-        pointGen = new ReadingPointGenerator(n, offset);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
