@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.base.Stopwatch;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
+import joptsimple.OptionDescriptor;
+import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
@@ -30,25 +32,34 @@ public class Main {
     private static ArgumentAcceptingOptionSpec<Integer> N = parser
             .accepts("n")
             .withRequiredArg()
-            .ofType(Integer.class);
+            .ofType(Integer.class)
+            .required();
     private static ArgumentAcceptingOptionSpec<Long> MAX_MAP_TIME = parser
             .accepts(
                     "max-time",
                     "The maximum amount of time to spend on mapping")
             .withOptionalArg()
             .ofType(Long.class)
-            .defaultsTo(5_000L); // 5 sec
+            .defaultsTo(5_000L) // 5 sec
+            .required();
     private static ArgumentAcceptingOptionSpec<Integer> OFFSET = parser
             .accepts(
                     "point-offset",
                     "The offset within the generated point offset files.")
             .withRequiredArg()
-            .ofType(Integer.class);
+            .ofType(Integer.class)
+            .required();
 
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
     public static void main(String[] args) throws Exception {
-        OptionSet options = parser.parse(args);
+        OptionSet options;
+        try {
+            options = parser.parse(args);
+        } catch (OptionException e) {
+            System.err.println(e.getLocalizedMessage());
+            return;
+        }
 
         int n = options.valueOf(N);
         long maxTimeForMapping = options.valueOf(MAX_MAP_TIME);
