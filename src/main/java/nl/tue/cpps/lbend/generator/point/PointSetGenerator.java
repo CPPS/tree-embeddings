@@ -12,4 +12,6 @@ public interface PointSetGenerator {
      *         next {@link Iterator#next()} call.
      */
     Iterator<List<Point>> generate();
+
+    List<Iterator<List<Point>>> splitGenerator(int nThreads);
 }

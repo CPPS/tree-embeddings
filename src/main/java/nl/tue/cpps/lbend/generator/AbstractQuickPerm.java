@@ -1,5 +1,8 @@
 package nl.tue.cpps.lbend.generator;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 
 import lombok.NonNull;
@@ -65,4 +68,38 @@ public abstract class AbstractQuickPerm<T> implements Iterator<T> {
         didFindNext = false;
         return a;
     }
+
+    public void write(DataOutputStream dos) throws IOException {
+        dos.writeInt(N);
+
+        writeData(dos);
+
+        for (int i = 0; i < N; i++) {
+            dos.writeInt(p[i]);
+        }
+
+        dos.writeInt(i);
+        dos.writeBoolean(didFindNext);
+    }
+
+    protected abstract void writeData(DataOutputStream dos) throws IOException;
+
+    public void read(DataInputStream dis) throws IOException {
+        int n = dis.readInt();
+        if (n != N) {
+            throw new IOException("Invalid data format: " + n);
+        }
+
+        readData(dis);
+
+        for (int i = 0; i < N; i++) {
+            p[i] = dis.readInt();
+        }
+
+        i = dis.readInt();
+        didFindNext = dis.readBoolean();
+    }
+
+    protected abstract void readData(DataInputStream dis) throws IOException;
+
 }

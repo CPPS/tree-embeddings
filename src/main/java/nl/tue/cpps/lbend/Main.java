@@ -1,6 +1,7 @@
 package nl.tue.cpps.lbend;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Stopwatch;
 
+import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
+import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Tree;
 import nl.tue.cpps.lbend.tree.TreeIterable;
 
@@ -21,15 +24,20 @@ public class Main {
     public static void main(String[] args) throws Exception {
         int n = 7;
         long maxTimeForMappingMS = 5_000; // 5 sec
+        int offset = 0;
 
-        run(n, maxTimeForMappingMS, new TreeIterable(new File("compact-trees/" + n + ".tree")));
+        run(n, maxTimeForMappingMS, new TreeIterable(new File("compact-trees/" + n + ".tree")), offset);
     }
 
-    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen) {
+    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen, int offset) throws IOException {
         int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
         // Dumper dumper = new DummyDumper();
+        PointSetGenerator pointGen;
+
+        // points = new PermutedPointGenerator(n);
+        pointGen = new ReadingPointGenerator(n, offset);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
@@ -53,11 +61,12 @@ public class Main {
 
                     // Printing is too slow :(
 
-//                     System.out.println("" + i + " " + points + " " +
-//                     Arrays.toString(mapping));
+                    // System.out.println("" + i + " " + points + " " +
+                    // Arrays.toString(mapping));
 
                     // dumper.draw(i, tree, points, mapping);
-                }).run(nCores);
+                },
+                pointGen).run(nCores);
 
         long ms = stopwatch.elapsed(TimeUnit.MILLISECONDS);
         System.out.println(

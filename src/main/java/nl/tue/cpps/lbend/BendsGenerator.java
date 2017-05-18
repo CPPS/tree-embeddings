@@ -10,6 +10,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.naming.TimeLimitExceededException;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
+import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator.PointGenerator;
+import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 import nl.tue.cpps.lbend.mappings.MappingFinder;
@@ -21,6 +23,7 @@ public class BendsGenerator {
     private final long maxTimeForMappingMS;
     private final Iterable<Tree> trees;
     private final Callback cb;
+    private final PointSetGenerator pointGenerator;
 
     @ThreadSafe
     interface Callback {
@@ -33,18 +36,20 @@ public class BendsGenerator {
             Iterable<Tree> trees,
             int n,
             long maxTimeForMappingMS,
-            Callback cb) {
+            Callback cb,
+            PointSetGenerator pointGenerator) {
         this.executor = executor;
         this.n = n;
         this.maxTimeForMappingMS = maxTimeForMappingMS;
         this.trees = trees;
         this.cb = cb;
+        this.pointGenerator = pointGenerator;
     }
 
     public void run(int nThreads) {
 
         CountDownLatch doneSignal = new CountDownLatch(nThreads);
-        List<Iterator<List<Point>>> pointGen = new PermutedPointGenerator(n).splitGenerator(nThreads);
+        List<Iterator<List<Point>>> pointGen = pointGenerator.splitGenerator(nThreads);
 
         for (int i = 0; i < nThreads; i++) {
             executor.execute(new Runner(

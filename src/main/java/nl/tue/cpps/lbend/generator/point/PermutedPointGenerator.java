@@ -15,11 +15,14 @@ import nl.tue.cpps.lbend.geometry.Point;
 
 @RequiredArgsConstructor
 public class PermutedPointGenerator implements PointSetGenerator {
+    public static interface PointGenerator extends Iterator<List<Point>> {
+        IntQuickPerm getPermuter();
+    }
 
     private final int n;
 
     @Override
-    public Iterator<List<Point>> generate() {
+    public PointGenerator generate() {
         // Array of Y coordinates
         // Points are represented as [x] = y
         int[] y = new int[n];
@@ -36,7 +39,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
         }
         List<Point> out = Collections.unmodifiableList(Arrays.asList(points));
 
-        return new Iterator<List<Point>>() {
+        return new PointGenerator() {
             @Override
             public boolean hasNext() {
                 return Q.hasNext();
@@ -53,6 +56,11 @@ public class PermutedPointGenerator implements PointSetGenerator {
 
                 return out;
             }
+
+            @Override
+            public IntQuickPerm getPermuter() {
+                return Q;
+            }
         };
     }
 
@@ -64,7 +72,12 @@ public class PermutedPointGenerator implements PointSetGenerator {
             y[i] = i;
         }
 
-        IntQuickPerm Q = new IntQuickPerm(y);
+        return splitGenerator(new IntQuickPerm(y), nSplit);
+    }
+
+    public List<Iterator<List<Point>>> splitGenerator(
+            IntQuickPerm Q, int nSplit) {
+        int[] y = Q.buf();
 
         class SplitIterator extends AbstractIterator<List<Point>> {
 
