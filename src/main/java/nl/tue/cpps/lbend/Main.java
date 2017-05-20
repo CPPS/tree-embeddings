@@ -40,8 +40,7 @@ public class Main {
                     "The maximum amount of time to spend on mapping")
             .withOptionalArg()
             .ofType(Long.class)
-            .defaultsTo(5_000L) // 5 sec
-            .required();
+            .defaultsTo(5_000L); // 5 sec;
     private static ArgumentAcceptingOptionSpec<Integer> OFFSET = parser
             .accepts(
                     "point-offset",
@@ -49,6 +48,14 @@ public class Main {
             .withRequiredArg()
             .ofType(Integer.class)
             .required();
+    private static ArgumentAcceptingOptionSpec<Integer> N_THREADS = parser
+            .accepts(
+                    "threads",
+                    "The amount of threads to use. " +
+                            "Defaults to the amount of cores available.")
+            .withOptionalArg()
+            .ofType(Integer.class)
+            .defaultsTo(-1); // -1 => detect
 
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
@@ -65,24 +72,29 @@ public class Main {
         long maxTimeForMapping = options.valueOf(MAX_MAP_TIME);
         int offset = options.valueOf(OFFSET);
 
+        int nThreads = options.valueOf(N_THREADS);
+        if (nThreads <= 0) {
+            nThreads = Runtime.getRuntime().availableProcessors();
+        }
+
         TreeIterable trees = new TreeIterable(new File(
                 "compact-trees/" + n + ".tree"));
         PointSetGenerator pointGen = new ReadingPointGenerator(n, offset);
+        // pointGen = new PermutedPointGenerator(n);
+
         run(
                 n,
                 maxTimeForMapping,
-                trees, pointGen);
+                trees, pointGen, nThreads);
     }
 
-    private static void run(int n, long maxTimeForMappingMS, Iterable<Tree> treeGen, PointSetGenerator pointGen)
+    private static void run(
+            int n, long maxTimeForMappingMS,
+            Iterable<Tree> treeGen, PointSetGenerator pointGen, int nCores)
             throws IOException {
-        int nCores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
         // Dumper dumper = new DummyDumper();
-        ;
-
-        // points = new PermutedPointGenerator(n);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         AtomicInteger cnt = new AtomicInteger(0);
