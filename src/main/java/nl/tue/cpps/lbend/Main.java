@@ -1,11 +1,7 @@
 package nl.tue.cpps.lbend;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,14 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.base.Stopwatch;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.OptionDescriptor;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Tree;
-import nl.tue.cpps.lbend.tree.TreeIterable;
 
 public class Main {
     private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance(Locale.US);
@@ -77,8 +70,11 @@ public class Main {
             nThreads = Runtime.getRuntime().availableProcessors();
         }
 
-        TreeIterable trees = new TreeIterable(new File(
-                "compact-trees/" + n + ".tree"));
+        Iterable<Tree> trees;
+        /*
+         * trees = new TreeIterable(new File( "compact-trees/" + n + ".tree"));
+         */
+        trees = new Hardcoded13TreeIterable();
         PointSetGenerator pointGen = new ReadingPointGenerator(n, offset);
         // pointGen = new PermutedPointGenerator(n);
 
@@ -92,6 +88,7 @@ public class Main {
             int n, long maxTimeForMappingMS,
             Iterable<Tree> treeGen, PointSetGenerator pointGen, int nCores)
             throws IOException {
+
         ExecutorService executor = Executors.newFixedThreadPool(nCores);
 
         // Dumper dumper = new DummyDumper();
@@ -109,7 +106,7 @@ public class Main {
                         if (overTime) {
                             System.err.println("Overtime: " + tree + " " + points);
                         } else {
-                            throw new RuntimeException(tree + " " + points);
+                            System.err.println("No mapping: " + tree + " " + points);
                         }
                     }
                     if (i % 10000 == 0) {
