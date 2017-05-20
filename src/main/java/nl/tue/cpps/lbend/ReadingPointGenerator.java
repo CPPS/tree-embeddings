@@ -20,7 +20,7 @@ import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 
 public class ReadingPointGenerator implements PointSetGenerator {
-    private static final File POINTS_DIR = new File("point-dump");
+    static final File POINTS_DIR = new File("point-dump");
 
     private final int N;
     private final int PER_FILE;
