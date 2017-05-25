@@ -17,14 +17,17 @@ public class TreeCompactor {
         }
     }
 
-    private static void run(int i) throws IOException {
+    private static void run(final int i) throws IOException {
         System.out.println("Writing " + i);
 
         File out = new File(OUT_DIR, i + ".tree");
-        CompactTreeWriter.forFile(out, w -> {
-            try (PlainTreeReader reader = new PlainTreeReader(IN_DIR, i)) {
-                while (reader.hasNext()) {
-                    w.writeTree(reader.next());
+        CompactTreeWriter.forFile(out, new IOConsumer<CompactTreeWriter>() {
+            @Override
+            public void accept(CompactTreeWriter w) throws IOException {
+                try (PlainTreeReader reader = new PlainTreeReader(IN_DIR, i)) {
+                    while (reader.hasNext()) {
+                        w.writeTree(reader.next());
+                    }
                 }
             }
         });
