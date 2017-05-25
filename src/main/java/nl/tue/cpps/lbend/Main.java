@@ -16,6 +16,8 @@ import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+import joptsimple.OptionSpecBuilder;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
@@ -53,6 +55,10 @@ public class Main {
             .withOptionalArg()
             .ofType(Integer.class)
             .defaultsTo(-1); // -1 => detect
+    private static OptionSpec<Void> MAGIC_TREE = parser
+            .accepts(
+                    "hardcoded-tree",
+                    "Whether to use the hardcoded 13 tree.");
 
     // Recommended JVM flags:
     // -server -XX:NewSize=5G -Xms6G -Xmx6G
@@ -75,8 +81,12 @@ public class Main {
         }
 
         Iterable<Tree> trees;
-        if (n == 13) {
-            // TODO: Make configurable
+        if (options.has(MAGIC_TREE)) {
+            if (n != 13) {
+                System.err.println("Hardcoded tree only possible with n = 13");
+                return;
+            }
+
             trees = new Hardcoded13TreeIterable();
         } else {
             trees = new TreeIterable(new File("compact-trees/" + n + ".tree"));
