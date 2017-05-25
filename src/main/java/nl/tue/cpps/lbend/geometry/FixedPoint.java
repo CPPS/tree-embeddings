@@ -1,11 +1,11 @@
 package nl.tue.cpps.lbend.geometry;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Data
+@Getter
 @RequiredArgsConstructor
-public final class FixedPoint implements Point {
+public final class FixedPoint extends AbstractPoint {
     private final int x, y;
 
     public static FixedPoint of(Point p) {
