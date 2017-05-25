@@ -2,20 +2,11 @@ package nl.tue.cpps.lbend.generators;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
-import static org.junit.Assert.*;
-
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
 import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
-import nl.tue.cpps.lbend.geometry.FixedPoint;
 import nl.tue.cpps.lbend.geometry.MutablePoint;
 import nl.tue.cpps.lbend.geometry.Point;
 import org.junit.Rule;
@@ -57,20 +48,14 @@ public class PermutedPointGeneratorTest {
     public void referenceSpeed() {
         Iterator<List<Point>> it = new PermutedPointGenerator(size).generate();
         while (it.hasNext()) {
-            List<Point> points = it.next();
+            it.next();
         }
     }
 
     @Test
     public void testMirrorRemoval() {
-
         // Amount of point sets
-        int n = 1;
-        for (int i = 1; i <= size; i++) {
-            n *= i;
-        }
 
-        Set<Set<FixedPoint>> seen = new HashSet<>();
         Iterator<List<Point>> it = new PermutedPointGenerator(size).generate();
         List<List<Point>> listOfPoints = new ArrayList<>();
         List<List<Point>> regular = new ArrayList<>();
@@ -102,21 +87,8 @@ public class PermutedPointGeneratorTest {
                 regular.add(clone);
                 skippingLastMax.add(clone);
             }
-
-            Set<FixedPoint> set = points.stream()
-                    .map(new Function<Point, FixedPoint>() {
-                        @Override
-                        public FixedPoint apply(Point t) {
-                            return FixedPoint.of(t);
-                        }
-                    })
-                    .collect(Collectors.<FixedPoint>toSet());
-
-            n--;
-
-            //assertTrue(seen.add(set));
         }
-        
+
         System.out.println(regular.size()+" "+skippingLastMax.size());
         
         Iterator<List<Point>> it2 = regular.iterator();
@@ -153,7 +125,7 @@ public class PermutedPointGeneratorTest {
         }
 
         for (List<Point> points2 : listOfPoints) {
-            if (points.containsAll(verticalMirror)) {
+            if (points2.containsAll(verticalMirror)) {
                 return true;
             }
 
