@@ -22,14 +22,18 @@ run_one() {
 outdir=$HOME/tree-workers
 mkdir -p $outdir
 
-for ((i=1; i<=ncores; i++)) ; do
+echo "+ Starting $nprocs"
+for ((i=1; i<=nprocs; i++)) ; do
+    echo "Starting $i";
+
 (
     while true ; do
         # Fetch next
-        stopos next -m
+        stopos next -m > /dev/null 2> /dev/null
 
-        if [ "$STOPOS" != "OK" ] ; then
+        if [ "$STOPOS_RC" != "OK" ] ; then
             # No more data
+            echo "No more data ($i): $STOPOS $STOPOS_RC"
             break
         fi
 
@@ -40,8 +44,10 @@ for ((i=1; i<=ncores; i++)) ; do
             continue
         fi
 
+        echo "Executing $i: $STOPOS_VALUE"
+
         # Create a temp file to write to
-        outfile=`tempfile`
+        outfile="$TMPDIR/n=$N,in=$STOPOS_VALUE.$RANDOM"
 
         # Run the program
         run_one $STOPOS_VALUE 2>&1 > $outfile
