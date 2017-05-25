@@ -69,9 +69,9 @@ public class ReadingPointGenerator implements PointSetGenerator {
 
         List<Iterator<List<Point>>> iterators = new PermutedPointGenerator(N).splitGenerator(q, nSplit);
 
-        AtomicInteger atomic = new AtomicInteger(PER_FILE);
+        final AtomicInteger atomic = new AtomicInteger(PER_FILE);
         for (int i = 0; i < iterators.size(); i++) {
-            Iterator<List<Point>> it = iterators.get(i);
+            final Iterator<List<Point>> it = iterators.get(i);
             iterators.set(i, new AbstractIterator<List<Point>>() {
                 @Override
                 protected List<Point> computeNext() {

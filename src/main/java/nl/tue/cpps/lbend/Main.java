@@ -1,7 +1,9 @@
 package nl.tue.cpps.lbend;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +17,9 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
+import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
+import nl.tue.cpps.lbend.tree.TreeIterable;
 
 public class Main {
     private static final NumberFormat NR_FORMAT = NumberFormat.getNumberInstance(Locale.US);
@@ -94,31 +98,34 @@ public class Main {
         // Dumper dumper = new DummyDumper();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
-        AtomicInteger cnt = new AtomicInteger(0);
+        final AtomicInteger cnt = new AtomicInteger(0);
         new BendsGenerator(
                 executor,
                 treeGen,
                 n,
                 maxTimeForMappingMS,
-                (tree, points, mapping, overTime) -> {
-                    int i = cnt.getAndIncrement();
-                    if (mapping == null) {
-                        if (overTime) {
-                            System.err.println("Overtime: " + tree + " " + points);
-                        } else {
-                            System.err.println("No mapping: " + tree + " " + points);
+                new BendsGenerator.Callback() {
+                    @Override
+                    public void on(Tree tree, List<Point> points, int[] mapping, boolean overTime) {
+                        int i = cnt.getAndIncrement();
+                        if (mapping == null) {
+                            if (overTime) {
+                                System.err.println("Overtime: " + tree + " " + points);
+                            } else {
+                                System.err.println("No mapping: " + tree + " " + points);
+                            }
                         }
+                        if (i % 10000 == 0) {
+                            System.out.println(NR_FORMAT.format(i));
+                        }
+
+                        // Printing is too slow :(
+
+                        // System.out.println("" + i + " " + points + " " +
+                        // Arrays.toString(mapping));
+
+                        // dumper.draw(i, tree, points, mapping);
                     }
-                    if (i % 10000 == 0) {
-                        System.out.println(NR_FORMAT.format(i));
-                    }
-
-                    // Printing is too slow :(
-
-                    // System.out.println("" + i + " " + points + " " +
-                    // Arrays.toString(mapping));
-
-                    // dumper.draw(i, tree, points, mapping);
                 },
                 pointGen).run(nCores);
 
