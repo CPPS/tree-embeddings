@@ -9,8 +9,6 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.naming.TimeLimitExceededException;
 
-import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator;
-import nl.tue.cpps.lbend.generator.point.PermutedPointGenerator.PointGenerator;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;

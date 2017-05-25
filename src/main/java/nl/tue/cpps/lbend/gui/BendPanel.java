@@ -1,11 +1,16 @@
 package nl.tue.cpps.lbend.gui;
 
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import nl.tue.cpps.lbend.geometry.LBend;
-
-import java.awt.*;
-import java.util.List;
 
 public class BendPanel extends JPanel {
     private final BendDrawer drawer = new BendDrawer();

@@ -5,7 +5,6 @@ import java.util.Random;
 
 import javax.naming.TimeLimitExceededException;
 
-import lombok.SneakyThrows;
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;

@@ -1,12 +1,12 @@
 package nl.tue.cpps.lbend.math;
 
+import java.util.Arrays;
+
 import javax.annotation.Nullable;
 
 import com.koloboke.collect.IntCursor;
 
 import nl.tue.cpps.lbend.geometry.Node;
-
-import java.util.*;
 
 /**
  * Implemented using:

@@ -1,5 +1,19 @@
 package nl.tue.cpps.lbend.gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.util.List;
+
+import javax.annotation.Nullable;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import com.google.common.collect.Lists;
 
 import lombok.Getter;
@@ -10,19 +24,6 @@ import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
-
-import javax.annotation.Nullable;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class TreeEmbeddingPanel extends JPanel {

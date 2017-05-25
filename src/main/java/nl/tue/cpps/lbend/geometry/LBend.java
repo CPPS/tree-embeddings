@@ -1,8 +1,8 @@
 package nl.tue.cpps.lbend.geometry;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class LBend {

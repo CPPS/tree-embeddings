@@ -1,8 +1,5 @@
 package nl.tue.cpps.lbend.util;
 
-import java.util.*;
-
-
 public class Stats {
 
     private double sum, sumSqrd;

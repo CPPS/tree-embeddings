@@ -1,12 +1,13 @@
 package nl.tue.cpps.lbend.geometry;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import nl.tue.cpps.lbend.math.Solver2SAT;
-
-import javax.annotation.Nullable;
-import java.util.*;
 
 public class MappingValidator2SAT {
     private Solver2SAT solver;
