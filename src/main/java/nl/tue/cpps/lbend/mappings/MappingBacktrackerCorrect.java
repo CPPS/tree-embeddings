@@ -6,14 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 
+import javax.naming.TimeLimitExceededException;
+
 import lombok.RequiredArgsConstructor;
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.Node;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
-import nl.tue.cpps.lbend.util.Stats;
-
-import javax.naming.TimeLimitExceededException;
 
 /**
  * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try all
@@ -50,7 +49,7 @@ import javax.naming.TimeLimitExceededException;
  *
  * Not thread safe!
  */
-public final class MappingBacktrackerCorrect extends AbstractMappingFinder {
+public final class MappingBacktrackerCorrect extends AbstractLBendMappingFinder {
     private final Queue<TreeNode> Q = new ArrayDeque<>();
     private final TreeNode root = new TreeNode(0, -1, -1);
     private final List<LBend> bends = new ArrayList<>();

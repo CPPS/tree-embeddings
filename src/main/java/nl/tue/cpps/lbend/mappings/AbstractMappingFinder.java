@@ -1,16 +1,22 @@
 package nl.tue.cpps.lbend.mappings;
 
-import java.util.List;
+import javax.naming.TimeLimitExceededException;
 
-import nl.tue.cpps.lbend.geometry.LBend;
-import nl.tue.cpps.lbend.geometry.Point;
+import lombok.SneakyThrows;
+import nl.tue.cpps.lbend.geometry.Tree;
 
 abstract class AbstractMappingFinder implements MappingFinder {
-    @Override
-    public final AbstractMappingFinder setPointSet(List<Point> points) {
-        setPoints(points, LBend.createAllBends(points));
-        return this;
+    public final int[] findMapping(Tree tree) {
+        int[] mapping = new int[tree.size()];
+        if (findMapping(tree, mapping)) {
+            return mapping;
+        }
+
+        return null;
     }
 
-    abstract void setPoints(List<Point> points, LBend[][][] bends);
+    @SneakyThrows(TimeLimitExceededException.class)
+    public final boolean findMapping(Tree tree, int[] mapping) {
+        return findMapping(tree, mapping, Long.MAX_VALUE);
+    }
 }

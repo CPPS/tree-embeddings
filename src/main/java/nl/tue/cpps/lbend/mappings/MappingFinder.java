@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.naming.TimeLimitExceededException;
 
-import lombok.SneakyThrows;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
@@ -28,14 +27,7 @@ public interface MappingFinder {
      * @return possible mapping, or null when not possible
      */
     @Nullable
-    default int[] findMapping(Tree tree) {
-        int[] mapping = new int[tree.size()];
-        if (findMapping(tree, mapping)) {
-            return mapping;
-        }
-
-        return null;
-    }
+    int[] findMapping(Tree tree);
 
     /**
      * If possible mapping exists, resulting mapping will be stored
@@ -45,10 +37,7 @@ public interface MappingFinder {
      * @param mapping the array to store the mapping in
      * @return true iff valid mapping is found
      */
-    @SneakyThrows(TimeLimitExceededException.class)
-    default boolean findMapping(Tree tree, int[] mapping) {
-        return findMapping(tree, mapping, Long.MAX_VALUE);
-    }
+    boolean findMapping(Tree tree, int[] mapping);
 
     /**
      * If possible mapping exists, resulting mapping will be stored

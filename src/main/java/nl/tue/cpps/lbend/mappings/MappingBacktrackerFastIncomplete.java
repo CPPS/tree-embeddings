@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.naming.TimeLimitExceededException;
+
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
-import nl.tue.cpps.lbend.util.Stats;
-
-import javax.naming.TimeLimitExceededException;
 
 /**
  * Try first l-bend of p1, see if sub tree of p1 can be placed. yes? -> try all
@@ -45,7 +44,7 @@ import javax.naming.TimeLimitExceededException;
  * childIdx=0, availablePoints=points-p, bends=[], mapping)) { return mapping; }
  * } return null;
  */
-public final class MappingBacktrackerFastIncomplete extends AbstractMappingFinder {
+public final class MappingBacktrackerFastIncomplete extends AbstractLBendMappingFinder {
     private final int n;
     private final MappingValidator2SAT validator;
     private final boolean[] contained;

@@ -18,7 +18,7 @@ import nl.tue.cpps.lbend.geometry.Tree;
  * Not thread safe!
  */
 @Deprecated // Not used
-final class MappingBacktrackerCorrectDistOpt implements MappingFinder {
+final class MappingBacktrackerCorrectDistOpt extends AbstractMappingFinder {
     private final Queue<TreeNode> Q = new ArrayDeque<>();
     private final TreeNode root = new TreeNode(0, -1, -1);
 
@@ -28,7 +28,7 @@ final class MappingBacktrackerCorrectDistOpt implements MappingFinder {
 
     private int[][] closestPoints;
     private int[] rootOrder;
-    
+
     @Override
     public MappingFinder setPointSet(List<Point> points) {
         this.points = points;

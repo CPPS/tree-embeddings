@@ -3,19 +3,20 @@ package nl.tue.cpps.lbend.mappings;
 import java.util.List;
 import java.util.Random;
 
+import javax.naming.TimeLimitExceededException;
+
+import lombok.SneakyThrows;
 import nl.tue.cpps.lbend.geometry.LBend;
 import nl.tue.cpps.lbend.geometry.MappingValidator2SAT;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
 
-import javax.naming.TimeLimitExceededException;
-
-public final class QuickMappingFinder implements MappingFinder {
+public final class QuickMappingFinder extends AbstractMappingFinder {
     private final Random random = new Random(0);
 
     private final MappingValidator2SAT validator;
-    private final AbstractMappingFinder fastIncorrectBacktracker;
-    private final AbstractMappingFinder correctBacktracker;
+    private final AbstractLBendMappingFinder fastIncorrectBacktracker;
+    private final AbstractLBendMappingFinder correctBacktracker;
 
     private List<Point> points;
 
@@ -39,9 +40,9 @@ public final class QuickMappingFinder implements MappingFinder {
 
     @Override
     public boolean findMapping(Tree tree, int[] mapping, long maxTimeMS) throws TimeLimitExceededException {
-//        if (getMappingByShuffle(points, tree, 0, mapping)) {
-//            return true;
-//        }
+        // if (getMappingByShuffle(points, tree, 0, mapping)) {
+        // return true;
+        // }
         if (fastIncorrectBacktracker.findMapping(tree, mapping, maxTimeMS)) {
             return true;
         }
