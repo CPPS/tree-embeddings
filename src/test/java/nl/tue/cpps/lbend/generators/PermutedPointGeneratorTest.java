@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -103,8 +104,13 @@ public class PermutedPointGeneratorTest {
             }
 
             Set<FixedPoint> set = points.stream()
-                    .map(FixedPoint::of)
-                    .collect(Collectors.toSet());
+                    .map(new Function<Point, FixedPoint>() {
+                        @Override
+                        public FixedPoint apply(Point t) {
+                            return FixedPoint.of(t);
+                        }
+                    })
+                    .collect(Collectors.<FixedPoint>toSet());
 
             n--;
 

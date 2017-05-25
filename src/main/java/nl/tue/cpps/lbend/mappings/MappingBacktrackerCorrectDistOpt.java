@@ -75,7 +75,7 @@ final class MappingBacktrackerCorrectDistOpt extends AbstractMappingFinder {
 
             Q.clear();
             root.addChildrenToQueue(Q, i);
-            if (backtrackMapping(Q, availableLocations, new ArrayList<>(), mapping)) {
+            if (backtrackMapping(Q, availableLocations, new ArrayList<LBend>(), mapping)) {
                 return true;
             }
         }
