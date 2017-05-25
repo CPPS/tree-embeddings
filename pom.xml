@@ -11,8 +11,8 @@
 		<powermock.version>1.6.2</powermock.version>
 		<findbugs.version>3.0.0</findbugs.version>
 
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 
 		<guava.version>19.0</guava.version>
 
@@ -87,12 +87,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.koloboke</groupId>
-			<artifactId>koloboke-api-jdk8</artifactId>
+			<artifactId>koloboke-api-jdk6-7</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.koloboke</groupId>
-			<artifactId>koloboke-impl-jdk8</artifactId>
+			<artifactId>koloboke-impl-jdk6-7</artifactId>
 			<version>1.0.0</version>
 			<scope>runtime</scope>
 		</dependency>
