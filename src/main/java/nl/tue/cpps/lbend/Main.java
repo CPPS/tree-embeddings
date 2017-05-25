@@ -75,10 +75,13 @@ public class Main {
         }
 
         Iterable<Tree> trees;
-        /*
-         * trees = new TreeIterable(new File( "compact-trees/" + n + ".tree"));
-         */
-        trees = new Hardcoded13TreeIterable();
+        if (n == 13) {
+            // TODO: Make configurable
+            trees = new Hardcoded13TreeIterable();
+        } else {
+            trees = new TreeIterable(new File("compact-trees/" + n + ".tree"));
+        }
+
         PointSetGenerator pointGen = new ReadingPointGenerator(n, offset);
         // pointGen = new PermutedPointGenerator(n);
 
