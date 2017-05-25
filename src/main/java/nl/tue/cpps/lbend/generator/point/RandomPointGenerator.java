@@ -1,9 +1,5 @@
 package nl.tue.cpps.lbend.generator.point;
 
-import nl.tue.cpps.lbend.geometry.FixedPoint;
-import nl.tue.cpps.lbend.geometry.Point;
-import nl.tue.cpps.lbend.math.Interval;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +12,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.koloboke.collect.set.hash.HashIntSet;
 import com.koloboke.collect.set.hash.HashIntSets;
+
+import nl.tue.cpps.lbend.geometry.FixedPoint;
+import nl.tue.cpps.lbend.geometry.Point;
+import nl.tue.cpps.lbend.math.Interval;
 
 public class RandomPointGenerator implements PointSetGenerator {
     private final Random random = new Random();
@@ -37,16 +37,19 @@ public class RandomPointGenerator implements PointSetGenerator {
         return random.nextInt(range.getLength()) + range.getMin();
     }
 
-    protected IntSupplier generateCoordinates(Interval range) {
-        HashIntSet coordinates = HashIntSets.newMutableSet(n);
+    protected IntSupplier generateCoordinates(final Interval range) {
+        final HashIntSet coordinates = HashIntSets.newMutableSet(n);
 
-        return () -> {
-            int coordinate;
-            do {
-                // Find a random coordinate that has not been generated before
-                coordinate = randomCoordinate(range);
-            } while (!coordinates.add(coordinate));
-            return coordinate;
+        return new IntSupplier() {
+            @Override
+            public int getAsInt() {
+                int coordinate;
+                do {
+                    // Find a random coordinate that has not been generated before
+                    coordinate = randomCoordinate(range);
+                } while (!coordinates.add(coordinate));
+                return coordinate;
+            }
         };
     }
 

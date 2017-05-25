@@ -25,19 +25,19 @@ public class PermutedPointGenerator implements PointSetGenerator {
     public PointGenerator generate() {
         // Array of Y coordinates
         // Points are represented as [x] = y
-        int[] y = new int[n];
+        final int[] y = new int[n];
         for (int i = 0; i < n; i++) {
             y[i] = i;
         }
 
-        IntQuickPerm Q = new IntQuickPerm(y);
+        final IntQuickPerm Q = new IntQuickPerm(y);
 
         // Prepare output list
-        MutablePoint[] points = new MutablePoint[n];
+        final MutablePoint[] points = new MutablePoint[n];
         for (int x = 0; x < n; x++) {
             points[x] = new MutablePoint(x, -1);
         }
-        List<Point> out = Collections.unmodifiableList(Arrays.asList(points));
+        final List<Point> out = Collections.<Point>unmodifiableList(Arrays.<MutablePoint>asList(points));
 
         return new PointGenerator() {
             @Override
@@ -76,8 +76,8 @@ public class PermutedPointGenerator implements PointSetGenerator {
     }
 
     public List<Iterator<List<Point>>> splitGenerator(
-            IntQuickPerm Q, int nSplit) {
-        int[] y = Q.buf();
+            final IntQuickPerm Q, final int nSplit) {
+        final int[] y = Q.buf();
 
         class SplitIterator extends AbstractIterator<List<Point>> {
 
@@ -90,7 +90,7 @@ public class PermutedPointGenerator implements PointSetGenerator {
                 for (int x = 0; x < n; x++) {
                     points[x] = new MutablePoint(x, -1);
                 }
-                out = Collections.unmodifiableList(Arrays.asList(points));
+                out = Collections.<Point>unmodifiableList(Arrays.asList(points));
             }
 
             @Override
