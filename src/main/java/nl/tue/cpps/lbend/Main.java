@@ -17,7 +17,6 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import joptsimple.OptionSpecBuilder;
 import nl.tue.cpps.lbend.generator.point.PointSetGenerator;
 import nl.tue.cpps.lbend.geometry.Point;
 import nl.tue.cpps.lbend.geometry.Tree;
@@ -123,9 +122,9 @@ public class Main {
                         int i = cnt.getAndIncrement();
                         if (mapping == null) {
                             if (overTime) {
-                                System.err.println("Overtime: " + tree + " " + points);
+                                System.out.println("Overtime: " + tree + " " + points);
                             } else {
-                                System.err.println("No mapping: " + tree + " " + points);
+                                System.out.println("No mapping: " + tree + " " + points);
                             }
                         }
                         if (i % 10000 == 0) {
