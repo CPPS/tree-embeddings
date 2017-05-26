@@ -81,7 +81,7 @@ public class ReadingPointGenerator implements PointSetGenerator {
                     }
 
                     // Limit to one page.
-                    int got = atomic.decrementAndGet();
+                    int got = atomic.getAndDecrement();
                     if (got <= 0) {
                         atomic.set(-1);
                         return endOfData();
